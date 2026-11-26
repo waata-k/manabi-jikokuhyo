@@ -1,6 +1,6 @@
 // Offline support: the app's own files are fetched from the network first (so updates
 // show up right away) and served from the cache when offline. Fonts are cached once.
-const CACHE = 'manabi-v1';
+const CACHE = 'manabi-v2';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

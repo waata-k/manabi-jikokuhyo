@@ -379,6 +379,84 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
 .danger-link { color: var(--danger); justify-self: start; }
 .chip.data-btn { cursor: pointer; background: var(--surface); border: 1px solid var(--rule-2); color: var(--ink); font-weight: 600; }
 
+/* ---------- study plan ---------- */
+.unit .i-meta { display: block; }
+.unit .i-meta .dot { vertical-align: -1px; margin-right: 4px; }
+.fixed { font-family: var(--f-mono); font-size: .76rem; font-weight: 600; color: var(--accent); margin-right: 6px; white-space: nowrap; }
+.memo-btn { border: 0; background: none; padding: 0; margin-left: 4px; color: var(--accent); font-size: .76rem; text-decoration: underline; text-underline-offset: 2px; }
+.memo textarea { width: 100%; margin-top: 6px; font-size: .88rem; }
+.memo-prev { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 2px; }
+.u-plan { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 2px 0 4px; }
+.levels { display: inline-flex; gap: 2px; background: var(--sunken); border-radius: 8px; padding: 2px; }
+.levels button { border: 0; background: transparent; width: 30px; height: 26px; border-radius: 6px; font-size: .9rem; color: var(--muted); }
+.levels button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.levels button[data-l="△"][aria-pressed="true"] { color: var(--hot); }
+.levels button[data-l="×"][aria-pressed="true"] { color: var(--danger); }
+.levels button[data-l="◎"][aria-pressed="true"], .levels button[data-l="○"][aria-pressed="true"] { color: var(--accent); }
+.revs { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.rv { border: 1px solid var(--rule-2); background: var(--surface); border-radius: 999px; font-size: .76rem; padding: 3px 10px; white-space: nowrap; color: var(--ink-2); }
+.rv.due { border-color: var(--c3); color: var(--ink); font-weight: 700; background: color-mix(in srgb, var(--c3) 18%, var(--surface)); }
+.rv.over { border-color: var(--danger); color: var(--danger); font-weight: 700; }
+.rv.fin { background: var(--sunken); border-color: transparent; color: var(--muted); }
+.step em.moved { color: var(--hot); }
+.step em.when.late { color: var(--hot); font-weight: 700; }
+.legend { display: flex; gap: 6px 14px; flex-wrap: wrap; font-size: .76rem; color: var(--muted); margin: -4px 0 6px; }
+.legend .lg-over { color: var(--danger); font-weight: 700; }
+.legend .lg-due { color: var(--c3); font-weight: 700; }
+.panel:not(.subject):not(.fold) > .units { padding: 0; }
+details.fold { padding: 0; }
+details.fold > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 14px 16px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold .wname { grid-column: 1; font-weight: 700; font-size: 1rem; }
+details.fold .wdates { grid-column: 1; font-size: .8rem; color: var(--muted); }
+details.fold .wprog { grid-column: 2; grid-row: 1; font-size: .86rem; color: var(--ink-2); white-space: nowrap; }
+details.fold .wbar { grid-column: 1 / -1; height: 4px; }
+details.fold .wnow { font-size: .68rem; font-weight: 700; color: var(--on-accent); background: var(--accent); border-radius: 5px; padding: 1px 7px; margin-left: 8px; vertical-align: 2px; }
+details.fold.current { border-color: var(--accent); }
+details.fold > .units { padding: 0 12px 10px 16px; }
+details.fold > .empty { padding: 0 16px 14px; }
+.bk-wrap { overflow-x: auto; padding: 0 12px 8px; }
+table.bk { border-collapse: collapse; width: 100%; min-width: 520px; font-size: .84rem; }
+table.bk th { font-size: .72rem; color: var(--muted); font-weight: 500; text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule-2); white-space: nowrap; }
+table.bk td { padding: 7px 8px; border-bottom: 1px dashed var(--rule); vertical-align: top; }
+table.bk tr.off td { color: var(--muted); }
+table.bk td.small { font-size: .8rem; color: var(--ink-2); line-height: 1.6; }
+.bk-done { color: var(--accent); font-weight: 700; white-space: nowrap; }
+.bk-part { color: var(--hot); font-weight: 700; white-space: nowrap; }
+.bk-todo { color: var(--ink); }
+.st-none { color: var(--muted); font-size: .76rem; }
+.sd summary { cursor: pointer; font-size: .76rem; color: var(--accent); }
+.sd ul { list-style: none; margin: 4px 0 2px; padding: 0; font-size: .78rem; color: var(--muted); line-height: 1.6; }
+.sd li.sdone { color: var(--accent); }
+.log { border-top: 1px solid var(--rule); padding: 10px 16px 14px; display: grid; gap: 8px; }
+.log-h { font-weight: 700; font-size: .86rem; }
+.log-h .sub { font-weight: 400; font-size: .76rem; }
+.log-f { display: flex; gap: 8px; flex-wrap: wrap; }
+.log-f input { flex: 1 1 200px; }
+.log-l { list-style: none; margin: 0; padding: 0; display: grid; }
+.log-l li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .84rem; border-bottom: 1px dashed var(--rule); }
+.log-l li span:nth-child(2) { overflow-wrap: anywhere; }
+.notice { margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: var(--accent-soft); font-size: .84rem; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.extra { margin-top: 10px; border: 1px dashed var(--rule-2); border-radius: 10px; padding: 6px 10px; }
+.extra summary { cursor: pointer; font-size: .84rem; font-weight: 700; color: var(--ink-2); }
+.extra .steps { background: transparent; padding: 4px 0 0; }
+.day-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.btn.skip:hover:not(:disabled) { border-color: var(--hot); color: var(--hot); }
+#today-ahead > summary { list-style: none; cursor: pointer; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+#today-ahead > summary::-webkit-details-marker { display: none; }
+#today-ahead > summary h2::after { content: ' ›'; color: var(--muted); }
+#today-ahead[open] > summary h2::after { content: ' ⌄'; }
+.ahead { list-style: none; margin: 8px 0 0; padding: 0; }
+.ahead li { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 0; border-top: 1px dashed var(--rule); font-size: .84rem; }
+.ahead .ad { font-weight: 700; white-space: nowrap; }
+.ahead .ad small { font-weight: 400; color: var(--muted); margin-left: 4px; }
+.ahead .tag { margin-left: 4px; }
+.chips-s { display: flex; gap: 4px; flex-wrap: wrap; }
+.chips-s .c { font-size: .72rem; border-radius: 6px; padding: 0 6px; font-weight: 700; color: var(--ink); background: color-mix(in srgb, var(--sc) 22%, transparent); }
+.chip.count { background: var(--accent); color: var(--on-accent); font-weight: 700; font-family: var(--f-mono); }
+.dm-h { margin: 0; font-size: .92rem; }
+#hdr-sync { cursor: pointer; border: 0; }
+
 /* ---------- modal & toast ---------- */
 .modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,12,15,.45); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
 .modal-card { background: var(--surface); border-radius: var(--r); padding: 18px; width: min(440px, 100%); display: grid; gap: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.25); max-height: 100%; overflow: auto; }
@@ -400,9 +478,10 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
     <nav class="top-tabs tabs" aria-label="画面切り替え" id="top-tabs"></nav>
     <div class="chips">
       <button class="chip run" id="hdr-timer" hidden data-action="goto" data-view="timer"></button>
+      <span class="chip count" id="hdr-count" hidden></span>
       <button class="chip data-btn" data-action="open-data">データ</button>
       <span class="chip" id="hdr-day"></span>
-      <span class="chip" id="hdr-sync"><i class="led"></i><span>読み込み中</span></span>
+      <button class="chip" id="hdr-sync" data-action="open-data" title="データと同期の設定"><i class="led"></i><span>読み込み中</span></button>
     </div>
   </div>
 </header>
@@ -415,6 +494,7 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
       <button class="btn primary" data-action="open-data">データを読み込む</button>
     </div>
     <div class="two-col">
+      <div class="stack">
       <div class="panel">
         <div class="panel-head">
           <h2>今日やること</h2>
@@ -424,6 +504,7 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
         <div class="progress" aria-hidden="true"><span id="today-bar" style="width:0%"></span></div>
         <ul class="items" id="today-list"></ul>
         <div id="today-carry"></div>
+        <div id="today-plan"></div>
         <form class="add-row" id="f-task" autocomplete="off">
           <input id="task-input" type="text" placeholder="やることを追加（例: 課題プリントを提出）" aria-label="やることを追加">
           <button class="btn primary" type="submit">追加</button>
@@ -432,6 +513,9 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
           <select id="unit-pick" aria-label="単元から今日の予定に追加"></select>
           <button class="btn" type="button" data-action="pick-unit">今日に追加</button>
         </div>
+      </div>
+      <div class="panel" id="today-review" hidden></div>
+      <details class="panel" id="today-ahead" hidden></details>
       </div>
       <div class="stack">
         <div class="panel">
@@ -458,6 +542,12 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
   <section class="view" id="v-units" aria-label="単元チェック" hidden>
     <div class="panel-head" style="margin:0">
       <h2>単元チェック</h2>
+      <div class="seg" id="unit-views" role="group" aria-label="表示のしかた" hidden>
+        <button data-action="uview" data-v="subject" aria-pressed="true">科目</button>
+        <button data-action="uview" data-v="week" aria-pressed="false">週ごと</button>
+        <button data-action="uview" data-v="review" aria-pressed="false">復習</button>
+        <button data-action="uview" data-v="book" aria-pressed="false">本ごと</button>
+      </div>
       <div class="seg" id="unit-filter" role="group" aria-label="表示する単元">
         <button data-filter="all" aria-pressed="true">すべて</button>
         <button data-filter="open" aria-pressed="false">未完了</button>
@@ -470,7 +560,7 @@ hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100
     </div>
     <div class="panel" id="units-overview"></div>
     <div class="stack" id="subjects"></div>
-    <div class="panel add-panel">
+    <div class="panel add-panel" id="units-add">
       <h3>単元を追加</h3>
       <form id="f-units" autocomplete="off">
         <select id="units-subject" aria-label="追加先の科目"></select>
@@ -808,7 +898,7 @@ const hasTransit = () => GROUPS.some(g => !g.bus);
 /* ================= state ================= */
 const LS_KEY = 'manabi-jikokuhyo-v1';
 const DEFAULT_SETTINGS = { xfer: {}, route: '', pomoWork: 25, pomoBreak: 5 };
-function emptyState() { return { v: 1, subjects: [], units: [], tasks: [], sessions: [], archive: {}, timer: null, settings: { ...DEFAULT_SETTINGS }, updatedAt: 0 }; }
+function emptyState() { return { v: 1, subjects: [], units: [], tasks: [], sessions: [], archive: {}, booklog: [], tomb: {}, timer: null, settings: { ...DEFAULT_SETTINGS }, settingsMt: 0, updatedAt: 0 }; }
 function normalize(s) {
   const e = emptyState();
   if (!s || typeof s !== 'object') return e;
@@ -821,6 +911,9 @@ function normalize(s) {
   out.settings = { ...DEFAULT_SETTINGS, ...(s.settings || {}) };
   if (!out.settings.xfer || typeof out.settings.xfer !== 'object') out.settings.xfer = {};
   out.timer = s.timer && typeof s.timer === 'object' ? { ...s.timer } : null;
+  out.booklog = Array.isArray(s.booklog) ? s.booklog.filter(x => x && x.id && Array.isArray(x.entries)) : [];
+  out.tomb = s.tomb && typeof s.tomb === 'object' ? { ...s.tomb } : {};
+  out.settingsMt = +s.settingsMt || 0;
   out.updatedAt = +s.updatedAt || 0;
   return out;
 }
@@ -829,12 +922,14 @@ function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(state))
 let state = loadLocal() || emptyState();
 
 function commit(opts = {}) {
-  state.updatedAt = Date.now();
   prune();
+  stampChanges();
+  state.updatedAt = Date.now();
   saveLocal();
   scheduleRemote();
+  scheduleGh();
   if (opts.settings) clearComboCache();
-  render();
+  if (!opts.noRender) render();
 }
 function prune() {
   const MAX = 1500;
@@ -858,12 +953,17 @@ function setSync(mode) {
     cloud: ['ok', 'クラウド保存'],
     local: ['', 'この端末に保存'],
     readonly: ['warn', 'この端末のみ（閲覧者）'],
-    offline: ['warn', '接続待ち（端末に保存中）']
+    offline: ['warn', '接続待ち（端末に保存中）'],
+    'gh-ok': ['ok', '同期済み'],
+    'gh-busy': ['', '同期中…'],
+    'gh-off': ['warn', '同期待ち（端末に保存中）'],
+    'gh-auth': ['warn', '同期できません']
   };
   const [cls, label] = map[mode] || map.local;
   el.className = 'chip ' + cls;
   el.innerHTML = '<i class="led"></i><span>' + esc(label) + '</span>';
-  el.title = mode === 'cloud' ? '進捗はこのページの持ち主のアカウントに保存され、ほかの端末でも同じ内容が表示されます' : mode === 'readonly' ? 'このページの持ち主だけがクラウドに保存できます。変更はこの端末のブラウザに保存されます' : '変更はこの端末のブラウザに保存されます';
+  if (mode === 'gh-ok' && ghLast) { const d = new Date(ghLast); el.lastChild.textContent = `同期済み ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+  el.title = mode.startsWith('gh-') ? 'GitHub の非公開リポジトリと同期しています。押すと設定を開きます' : mode === 'cloud' ? '進捗はこのページの持ち主のアカウントに保存され、ほかの端末でも同じ内容が表示されます' : mode === 'readonly' ? 'このページの持ち主だけがクラウドに保存できます。変更はこの端末のブラウザに保存されます' : '変更はこの端末のブラウザに保存されます';
 }
 function scheduleRemote() {
   if (!docRef || syncMode === 'readonly') return;
@@ -889,10 +989,10 @@ async function flush() {
   }
 }
 async function initCloud() {
-  if (!window.claude || typeof window.claude.use !== 'function') { setSync('local'); return; }
+  if (!window.claude || typeof window.claude.use !== 'function') { if (ghOn()) ghSync(); else { setSync('local'); autoReflow(); } return; }
   let db = null;
   try { db = await window.claude.use('db'); } catch (e) { db = null; }
-  if (!db) { setSync('local'); return; }
+  if (!db) { setSync('local'); autoReflow(); return; }
   try { docRef = db.doc('app/state'); } catch (e) { setSync('local'); return; }
   const timer = setTimeout(() => { if (!gotFirst) setSync('offline'); }, 10000);
   docRef.onSnapshot(snap => {
@@ -906,12 +1006,243 @@ async function initCloud() {
       scheduleRemote();
     }
     if (gotFirst && syncMode !== 'readonly') setSync('cloud');
+    if (gotFirst) autoReflow();
   }, err => {
     clearTimeout(timer);
     setSync(err && err.code === 'revoked' ? 'local' : 'offline');
   });
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && dirty) flush(); });
+
+/* ================= change tracking (for merging between devices) ================= */
+// Each subject/unit/task/book log gets mt = time of its last local change; deletions leave a tombstone.
+function stableStr(v) {
+  if (v === null || typeof v !== 'object') return JSON.stringify(v === undefined ? null : v);
+  if (Array.isArray(v)) return '[' + v.map(stableStr).join(',') + ']';
+  return '{' + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ':' + stableStr(v[k])).join(',') + '}';
+}
+function strHash(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + '.' + s.length; }
+const noMt = x => { const { mt, ...rest } = x || {}; return rest; };
+function snapOf(st) {
+  const m = new Map();
+  const add = (pfx, list) => { for (const x of list || []) m.set(pfx + x.id, stableStr(noMt(x))); };
+  add('s:', st.subjects); add('u:', st.units); add('t:', st.tasks); add('b:', st.booklog);
+  for (const x of st.sessions || []) m.set('x:' + x.id, '1');
+  m.set('settings', stableStr(st.settings));
+  m.set('timer', st.timer ? stableStr(noMt(st.timer)) : 'null');
+  return m;
+}
+let snapMap = null;
+function stampChanges() {
+  const now = Date.now(), prev = snapMap, next = snapOf(state);
+  if (prev) {
+    const stamp = (pfx, list) => { for (const x of list || []) if (prev.get(pfx + x.id) !== next.get(pfx + x.id)) x.mt = now; };
+    stamp('s:', state.subjects); stamp('u:', state.units); stamp('t:', state.tasks); stamp('b:', state.booklog);
+    for (const k of prev.keys()) if (/^[sutbx]:/.test(k) && !next.has(k)) state.tomb[k] = now;
+    if (prev.get('settings') !== next.get('settings')) state.settingsMt = now;
+    if (state.timer && prev.get('timer') !== next.get('timer')) state.timer.mt = now;
+  }
+  snapMap = next;
+}
+function mergeStates(L, R) {
+  const tomb = { ...(R.tomb || {}) };
+  for (const [k, v] of Object.entries(L.tomb || {})) tomb[k] = Math.max(tomb[k] || 0, v);
+  const live = (pfx, x) => !(tomb[pfx + x.id] && tomb[pfx + x.id] >= (x.mt || 0));
+  const mergeList = (pfx, a, b) => {
+    const bm = new Map((b || []).map(x => [x.id, x])), out = [], seen = new Set();
+    for (const x of a || []) { const y = bm.get(x.id); const pick = y && (y.mt || 0) > (x.mt || 0) ? y : x; seen.add(x.id); if (live(pfx, pick)) out.push(pick); }
+    for (const y of b || []) if (!seen.has(y.id) && live(pfx, y)) out.push(y);
+    return out;
+  };
+  const out = normalize({});
+  out.subjects = mergeList('s:', L.subjects, R.subjects);
+  out.units = mergeList('u:', L.units, R.units);
+  out.tasks = mergeList('t:', L.tasks, R.tasks);
+  out.booklog = mergeList('b:', L.booklog, R.booklog);
+  const sm = new Map();
+  for (const x of [...(R.sessions || []), ...(L.sessions || [])]) sm.set(x.id, x);
+  out.sessions = [...sm.values()].filter(x => !tomb['x:' + x.id]).sort((a, b) => a.s - b.s);
+  const lNew = (L.updatedAt || 0) >= (R.updatedAt || 0);
+  out.archive = lNew ? { ...R.archive, ...L.archive } : { ...L.archive, ...R.archive };
+  const lSet = (L.settingsMt || 0) >= (R.settingsMt || 0);
+  out.settings = lSet ? L.settings : R.settings;
+  out.settingsMt = Math.max(L.settingsMt || 0, R.settingsMt || 0);
+  out.timer = (((L.timer || {}).mt || 0) >= ((R.timer || {}).mt || 0)) ? L.timer : R.timer;
+  const cutoff = Date.now() - 60 * 864e5;
+  for (const k of Object.keys(tomb)) if (tomb[k] < cutoff) delete tomb[k];
+  out.tomb = tomb;
+  out.updatedAt = Math.max(L.updatedAt || 0, R.updatedAt || 0);
+  return normalize(out);
+}
+
+/* ================= GitHub sync (a private repository holds state.json and pack.json) ================= */
+const SYNC_KEY = 'manabi-sync-v1';
+let syncCfg = (() => { try { return JSON.parse(localStorage.getItem(SYNC_KEY) || 'null'); } catch (e) { return null; } })();
+function saveSyncCfg() { try { if (syncCfg) localStorage.setItem(SYNC_KEY, JSON.stringify(syncCfg)); else localStorage.removeItem(SYNC_KEY); } catch (e) { /* ignore */ } }
+const ghOn = () => !!(syncCfg && syncCfg.repo && syncCfg.token) && !(window.claude && window.claude.use);
+const ghApi = () => { try { return localStorage.getItem('manabi-sync-api') || 'https://api.github.com'; } catch (e) { return 'https://api.github.com'; } };
+function b64enc(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+function b64dec(b64) {
+  const bin = atob(String(b64).replace(/\s/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+const ghHeaders = (token, extra = {}) => ({ Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...extra });
+const ghUrl = p => `${ghApi()}/repos/${syncCfg.repo}/contents/${p}`;
+async function ghGet(p, etag) {
+  const res = await fetch(ghUrl(p), { headers: ghHeaders(syncCfg.token, etag ? { 'If-None-Match': etag } : {}), cache: 'no-store' });
+  if (res.status === 304) return { notModified: true };
+  if (res.status === 404) {
+    // 404 also means "no access": tell the two apart by reading the repository itself
+    const rr = await fetch(`${ghApi()}/repos/${syncCfg.repo}`, { headers: ghHeaders(syncCfg.token), cache: 'no-store' });
+    if (rr.ok) return { missing: true };
+    throw { status: rr.status || 404 };
+  }
+  if (!res.ok) throw { status: res.status };
+  const j = await res.json();
+  let text = j.content && j.encoding === 'base64' ? b64dec(j.content) : null;
+  if (text == null) {
+    const raw = await fetch(ghUrl(p), { headers: ghHeaders(syncCfg.token, { Accept: 'application/vnd.github.raw+json' }), cache: 'no-store' });
+    if (!raw.ok) throw { status: raw.status };
+    text = await raw.text();
+  }
+  return { sha: j.sha, json: JSON.parse(text), etag: res.headers.get('ETag') };
+}
+async function ghPut(p, obj, sha, message) {
+  const body = { message, content: b64enc(JSON.stringify(obj)) };
+  if (sha) body.sha = sha;
+  const res = await fetch(ghUrl(p), { method: 'PUT', headers: ghHeaders(syncCfg.token, { 'Content-Type': 'application/json' }), body: JSON.stringify(body) });
+  if (res.status === 409 || res.status === 422) throw { status: res.status, conflict: true };
+  if (!res.ok) throw { status: res.status };
+  const j = await res.json();
+  return j.content && j.content.sha;
+}
+let ghBusy = false, ghAgain = false, ghTimer = null, ghLast = 0, ghError = null, ghFirstDone = false;
+function scheduleGh(delay = 2500) {
+  if (!ghOn()) return;
+  clearTimeout(ghTimer);
+  ghTimer = setTimeout(() => { ghTimer = null; ghSync(); }, delay);
+}
+function applyMergedState(next) {
+  state = next;
+  snapMap = snapOf(state);
+  saveLocal();
+  clearComboCache();
+  render();
+}
+async function ghSyncPack(cfg) {
+  const cached = cfg.etag.pack && cfg.sha.pack;
+  const r = await ghGet('pack.json', cached ? cfg.etag.pack : null);
+  if (r.notModified) return;
+  const localRev = +(PACK.rev || 0);
+  if (r.missing) {
+    if (PACK.transit || PACK.bus || PACK.plan) {
+      if (!PACK.rev) { PACK.rev = Date.now(); savePack(); }
+      cfg.sha.pack = await ghPut('pack.json', PACK, null, '時刻表・学習計画データを更新'); cfg.etag.pack = null;
+    }
+    return;
+  }
+  cfg.sha.pack = r.sha; cfg.etag.pack = r.etag;
+  const remoteRev = +(r.json.rev || 0);
+  if (remoteRev > localRev || (!localRev && !(PACK.transit || PACK.bus || PACK.plan))) {
+    PACK = r.json; savePack(); rebuildData(); perCapCache = null; render();
+  } else if (localRev > remoteRev) {
+    cfg.sha.pack = await ghPut('pack.json', PACK, r.sha, '時刻表・学習計画データを更新'); cfg.etag.pack = null;
+  }
+}
+async function ghSync() {
+  if (!ghOn()) return;
+  if (ghBusy) { ghAgain = true; return; }
+  ghBusy = true;
+  clearTimeout(ghTimer); ghTimer = null;
+  setSync('gh-busy');
+  const cfg = syncCfg;
+  cfg.sha = cfg.sha || {}; cfg.etag = cfg.etag || {};
+  try {
+    await ghSyncPack(cfg);
+    for (let attempt = 0; ; attempt++) {
+      const useCache = !!(cfg.etag.state && cfg.sha.state && cfg.stateHash);
+      const r = await ghGet('state.json', useCache ? cfg.etag.state : null);
+      let remoteHash, sha;
+      if (r.notModified) { remoteHash = cfg.stateHash; sha = cfg.sha.state; }
+      else if (r.missing) { remoteHash = null; sha = null; }
+      else {
+        const remote = normalize(r.json);
+        sha = r.sha; cfg.etag.state = r.etag;
+        remoteHash = strHash(stableStr(remote));
+        const merged = mergeStates(state, remote);
+        if (stableStr(merged) !== stableStr(state)) applyMergedState(merged);
+      }
+      const curHash = strHash(stableStr(state));
+      if (curHash === remoteHash) { cfg.sha.state = sha; cfg.stateHash = remoteHash; break; }
+      try {
+        cfg.sha.state = await ghPut('state.json', state, sha, '進み具合を同期');
+        cfg.stateHash = curHash; cfg.etag.state = null;
+        break;
+      } catch (e) {
+        if (e && e.conflict && attempt < 3) { cfg.etag.state = null; cfg.stateHash = null; continue; }
+        throw e;
+      }
+    }
+    ghLast = Date.now(); ghError = null;
+    setSync('gh-ok');
+  } catch (e) {
+    ghError = e && e.status ? e.status : 'net';
+    setSync(ghError === 401 || ghError === 403 || ghError === 404 ? 'gh-auth' : 'gh-off');
+  } finally {
+    if (syncCfg === cfg) saveSyncCfg();
+    ghBusy = false;
+    if (!ghFirstDone && !ghError) { ghFirstDone = true; autoReflow(); }
+    if (ghAgain) { ghAgain = false; scheduleGh(400); }
+    const st = $('#sy-status'); if (st) st.textContent = syncStatusText();
+  }
+}
+function syncStatusText() {
+  if (!ghOn()) return '';
+  if (ghBusy) return '同期しています…';
+  if (ghError === 401) return 'トークンが正しくないか、期限が切れています。新しいトークンを入れてください。';
+  if (ghError === 403 || ghError === 404) return 'リポジトリに書き込めません。トークンにこのリポジトリの「Contents: Read and write」を許可したか確認してください。';
+  if (ghError) return '通信できないため、この端末に保存しています。つながったら自動で同期します。';
+  if (ghLast) { const d = new Date(ghLast); return `最後に同期した時刻 ${pad(d.getHours())}:${pad(d.getMinutes())}（${syncCfg.repo}）`; }
+  return '';
+}
+async function connectSync() {
+  const st = $('#sy-status');
+  const repo = $('#sy-repo').value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/+$/, '');
+  const token = $('#sy-token').value.trim() || (syncCfg && syncCfg.token) || '';
+  if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { st.textContent = 'リポジトリは「ユーザー名/リポジトリ名」の形で入れてください。'; return; }
+  if (!token) { st.textContent = 'アクセストークンを入れてください。'; return; }
+  st.textContent = '確認しています…';
+  let info;
+  try {
+    const res = await fetch(`${ghApi()}/repos/${repo}`, { headers: ghHeaders(token), cache: 'no-store' });
+    if (res.status === 401) { st.textContent = 'トークンが正しくないか、期限が切れています。'; return; }
+    if (res.status === 403 || res.status === 404) { st.textContent = 'リポジトリが見つかりません。名前と、トークンにこのリポジトリへのアクセスを許可したかを確認してください。'; return; }
+    if (!res.ok) { st.textContent = `GitHub に接続できませんでした（${res.status}）。`; return; }
+    info = await res.json();
+  } catch (e) { st.textContent = 'GitHub に接続できませんでした。通信を確認してください。'; return; }
+  if (!info.private) { st.textContent = 'このリポジトリは公開されています。進み具合が誰でも見られてしまうので、非公開のリポジトリを指定してください。'; return; }
+  syncCfg = { repo, token, sha: {}, etag: {} };
+  saveSyncCfg();
+  $('#sy-token').value = '';
+  await ghSync();
+  st.textContent = syncStatusText();
+  if (!ghError) toast('同期をはじめました。ほかの端末でも同じ設定をすると、同じ内容になります');
+}
+document.addEventListener('visibilitychange', () => {
+  if (!ghOn()) return;
+  if (document.visibilityState === 'visible') ghSync();
+  else if (ghTimer) ghSync();
+});
+window.addEventListener('focus', () => { if (ghOn() && Date.now() - ghLast > 15000) ghSync(); });
+window.addEventListener('online', () => { if (ghOn()) ghSync(); });
+setInterval(() => { if (ghOn() && document.visibilityState === 'visible' && Date.now() - ghLast > 60000) ghSync(); }, 15000);
 
 /* ================= derived data ================= */
 const subjOf = id => state.subjects.find(s => s.id === id);
@@ -995,6 +1326,7 @@ function renderHeader() {
   chip.textContent = DAY_LABEL[day];
   chip.className = 'chip' + (day === 'hd' ? ' day-hd' : '');
   renderTimerChip();
+  renderCountdown();
 }
 function renderTimerChip() {
   const t = state.timer, el = $('#hdr-timer');
@@ -1005,6 +1337,279 @@ function renderTimerChip() {
     const ms = t.mode === 'pomo' ? Math.max(0, phaseTarget(t) - timerElapsed()) : timerElapsed();
     el.textContent = (t.running ? (brk ? '休憩 ' : '勉強中 ') : '一時停止 ') + clockStr(ms);
   }
+}
+
+/* ================= study plan (optional "plan" in the data file) =================
+   capacity: how much time each day has → overdue steps are spread over the next days
+   review:   復習1 / 復習2 due dates after a unit is done
+   levels:   理解度 ◎○△× per unit
+   weeks / books: week view and book (table of contents) view */
+const PLAN = () => (PACK.plan && typeof PACK.plan === 'object' ? PACK.plan : null);
+const addDaysStr = (s, n) => ymd(addDays(parseYmd(s), n));
+function planCap(ds) {
+  const p = PLAN(), c = p && p.capacity;
+  if (!c) return 1;
+  if ((p.start && ds < p.start) || (p.end && ds >= p.end) || (c.off || []).includes(ds)) return 0;
+  if ((c.full || []).includes(ds)) return 2;
+  const w = +((c.weekday || [])[parseYmd(ds).getDay()] ?? 1);
+  return (c.half || []).includes(ds) ? w / 2 : w;
+}
+const canReflow = () => { const p = PLAN(); return !!(p && p.capacity && p.end); };
+function pendingSteps() {
+  const out = [];
+  state.units.forEach((u, ui) => {
+    if (u.status === 'done') return;
+    stepsOf(u).forEach((s, i) => { if (isNorma(s) && !s.done && s.plan) out.push({ u, i, d: s.plan, ui }); });
+  });
+  return out;
+}
+function availDays(start, n) {
+  const p = PLAN(), out = [];
+  let d = start, guard = 0;
+  while (out.length < n && (!p || !p.end || d < p.end) && guard++ < 500) { if (planCap(d) > 0) out.push(d); d = addDaysStr(d, 1); }
+  return out;
+}
+let perCapCache = null;
+function perCap() {
+  const p = PLAN();
+  const n = state.units.reduce((a, u) => a + stepsOf(u).filter(s => isNorma(s) && (s.base || s.plan)).length, 0);
+  const key = JSON.stringify([p.start, p.end, p.capacity, n]);
+  if (perCapCache && perCapCache.key === key) return perCapCache.v;
+  let c = 0;
+  for (let d = p.start || todayStr(), g = 0; d < p.end && g < 1000; d = addDaysStr(d, 1), g++) c += planCap(d);
+  perCapCache = { key, v: n / (c || 1) };
+  return perCapCache.v;
+}
+const dayTarget = d => planCap(d) * perCap() * 1.3;
+// keep the original order; put each step on the earliest of the next 14 usable days that still has room
+function placeSteps(items, start) {
+  const key = x => x.u.id + '/' + x.i, moving = new Set(items.map(key));
+  const load = {};
+  pendingSteps().forEach(p => { if (!moving.has(key(p))) load[p.d] = (load[p.d] || 0) + 1; });
+  const days = availDays(start, 14), moves = [];
+  if (!days.length) return moves;
+  const minDay = {};
+  [...items].sort((a, b) => a.d.localeCompare(b.d) || a.ui - b.ui || a.i - b.i).forEach(x => {
+    const ok = days.filter(d => d >= (minDay[x.u.id] || start));
+    const cand = ok.length ? ok : [days[days.length - 1]];
+    let best = cand.find(d => (load[d] || 0) + 1 <= dayTarget(d));
+    if (!best) { let bs = Infinity; cand.forEach((d, k) => { const sc = ((load[d] || 0) + 1) / planCap(d) + 0.4 * k; if (sc < bs - 1e-9) { bs = sc; best = d; } }); }
+    load[best] = (load[best] || 0) + 1; minDay[x.u.id] = best;
+    moves.push({ u: x.u, i: x.i, d: best });
+  });
+  return moves;
+}
+let planNotice = null, reflowDone = false, reflowDay = todayStr();
+const moveDates = moves => [...new Set(moves.map(m => m.d))].sort();
+function applyMoves(moves) { for (const m of moves) { const s = stepsOf(m.u)[m.i]; if (s) s.plan = m.d; } }
+function autoReflow() {
+  if (reflowDay !== todayStr()) { reflowDay = todayStr(); reflowDone = false; }
+  if (reflowDone || !canReflow()) return;
+  reflowDone = true;
+  const today = todayStr();
+  const over = pendingSteps().filter(p => p.d < today);
+  if (!over.length) return;
+  const moves = placeSteps(over, today);
+  applyMoves(moves);
+  planNotice = { kind: 'auto', n: over.length, ds: moveDates(moves) };
+  commit();
+}
+function skipToday() {
+  const today = todayStr();
+  const items = pendingSteps().filter(p => p.d <= today);
+  if (!items.length) return;
+  const undo = items.map(p => ({ id: p.u.id, i: p.i, d: p.d }));
+  const moves = placeSteps(items, addDaysStr(today, 1));
+  applyMoves(moves);
+  planNotice = { kind: 'skip', n: items.length, ds: moveDates(moves), undo };
+  commit();
+}
+function undoSkip() {
+  const n = planNotice;
+  planNotice = null;
+  if (n && n.undo) { for (const x of n.undo) { const u = unitOf(x.id), s = u && stepsOf(u)[x.i]; if (s) s.plan = x.d; } commit(); } else render();
+}
+
+/* ---- reviews & levels ---- */
+const reviewCfg = () => { const p = PLAN(); return p && p.review ? p.review : null; };
+function reviewInfo(u) {
+  const r = reviewCfg();
+  if (!r || !(r.subjects || []).includes(u.subjectId) || u.status !== 'done' || !u.doneAt) return null;
+  if (!u.r1At) return { step: 1, due: addDaysStr(u.doneAt, +r.first || 3) };
+  if (!u.r2At) return { step: 2, due: addDaysStr(u.r1At, +r.second || 7) };
+  return { step: 3 };
+}
+const dueState = due => { if (!due) return ''; const t = todayStr(); return due < t ? 'over' : due === t ? 'due' : 'wait'; };
+const LEVELS = ['◎', '○', '△', '×'];
+const hasLevels = u => { const p = PLAN(); return !!(p && p.levels && (p.levels.subjects || []).includes(u.subjectId)); };
+let openMemo = null;
+
+/* ---- one unit row (units tab, week/review views, today's review panel) ---- */
+function unitRowHtml(u, today, opts = {}) {
+  const m = unitMinutes(u.id), st = stepsOf(u);
+  const norma = st.filter(isNorma), nDone = norma.filter(x => x.done).length;
+  const np = u.status === 'done' ? null : nextPlan(u), open = openSteps.has(u.id), s = subjOf(u.subjectId);
+  const meta = [opts.showSubject && s ? `<span class="dot" style="--sc:${slot(s.color)}"></span>${esc(s.name)}` : '', u.week && opts.showWeek !== false ? esc(u.week) : '',
+    u.book ? esc(u.book) : '', u.est ? `目安${u.est}分` : '', m >= 1 ? `記録${fmtMin(m)}` : '', u.doneAt && u.status === 'done' ? `${esc(mdOf(u.doneAt))} 完了` : ''].filter(Boolean).join(' · ');
+  const ri = reviewInfo(u);
+  let revs = '';
+  if (ri) {
+    const b1 = u.r1At ? `<button class="rv fin" data-action="r1" data-id="${esc(u.id)}" title="押すと取り消し">復習1 ✓ ${esc(mdOf(u.r1At))}</button>`
+      : `<button class="rv ${dueState(ri.due)}" data-action="r1" data-id="${esc(u.id)}">復習1 ${esc(mdOf(ri.due))}</button>`;
+    const b2 = !u.r1At ? '' : u.r2At ? `<button class="rv fin" data-action="r2" data-id="${esc(u.id)}" title="押すと取り消し">復習2 ✓ ${esc(mdOf(u.r2At))}</button>`
+      : `<button class="rv ${dueState(ri.due)}" data-action="r2" data-id="${esc(u.id)}">復習2 ${esc(mdOf(ri.due))}</button>`;
+    revs = `<div class="revs">${b1}${b2}</div>`;
+  }
+  const levels = hasLevels(u) ? `<div class="levels" role="group" aria-label="理解度">${LEVELS.map(l => `<button data-action="level" data-id="${esc(u.id)}" data-l="${l}" aria-pressed="${u.level === l}">${l}</button>`).join('')}</div>` : '';
+  const stepsBtn = st.length ? `<button class="steps-toggle" data-action="toggle-steps" data-id="${esc(u.id)}" aria-expanded="${open}">${norma.length ? 'ノルマ' : 'やること'} <b>${nDone}/${norma.length}</b>${st.length > norma.length ? `<small>＋応用 ${st.filter(x => !isNorma(x) && x.done).length}/${st.length - norma.length}</small>` : ''}<span class="chev">›</span></button>` : '';
+  const refText = [u.ref, ...(u.refs || []).map(x => x.t)].filter(Boolean).join('／');
+  const stepsList = st.length && open ? `<ul class="steps">${st.map((x, i) => stepLi(u, i, { showPlan: true, showDone: true })).join('')}</ul>${refText ? `<div class="note ref">参考: ${esc(refText)}</div>` : ''}` : '';
+  const memoOpen = openMemo === u.id;
+  const memo = memoOpen ? `<div class="memo"><textarea id="memo-${esc(u.id)}" data-memo="${esc(u.id)}" rows="3" placeholder="例：例題 23・41 が解けなかった／過去問の点数">${esc(u.note || '')}</textarea><div class="note">入力をやめると自動で保存されます</div></div>`
+    : (u.note ? `<div class="note memo-prev">${esc(u.note.length > 80 ? u.note.slice(0, 80) + '…' : u.note)}</div>` : '');
+  const extra = levels || revs ? `<div class="u-plan">${levels}${revs}</div>` : '';
+  const ctrl = opts.compact ? '' : `<div class="unit-ctrls">
+      <button class="st st-${u.status}" data-action="unit-status" data-id="${esc(u.id)}" title="押すと状態が切り替わります">${ST_LABEL[u.status] || '未着手'}</button>
+      ${st.length ? (np ? `<span class="next-plan">次 ${esc(mdOf(np))}</span>` : '') : `<input type="date" class="u-date" data-change="unit-date" data-id="${esc(u.id)}" value="${esc(u.plan || '')}" aria-label="${esc(u.name)} の予定日">`}
+      <button class="today-btn ${u.plan === today ? 'on' : ''}" data-action="unit-today" data-id="${esc(u.id)}" aria-pressed="${u.plan === today}">今日</button>
+      <button class="icon-btn" data-action="edit-unit" data-id="${esc(u.id)}" aria-label="${esc(u.name)} を編集">${ICON.edit}</button>
+    </div>`;
+  return `<li class="unit ${u.status === 'done' ? 'done' : ''}">
+    <label class="chk"><input type="checkbox" data-action="toggle-unit" data-id="${esc(u.id)}" ${u.status === 'done' ? 'checked' : ''} aria-label="${esc(u.name)} を完了にする"><span class="box"></span></label>
+    <div class="i-main"><div class="i-title">${u.fixed ? `<span class="fixed">${esc(u.fixed)}</span>` : ''}${esc(u.name)}${u.sample ? '<span class="badge ex">例</span>' : ''}</div>
+      <div class="i-meta">${meta}<button class="memo-btn" data-action="memo" data-id="${esc(u.id)}">${memoOpen ? 'メモを閉じる' : (u.note ? 'メモを見る' : 'メモ')}</button></div>${stepsBtn}</div>
+    ${extra || stepsList || memo ? `<div class="u-more">${extra}${stepsList}${memo}</div>` : ''}
+    ${ctrl}
+  </li>`;
+}
+
+/* ---- units tab: week / review / book views ---- */
+let unitView = 'subject';
+const openWeeks = new Set(), openBooks = new Set();
+let weeksInit = false;
+const passFilter = u => unitFilter === 'all' || (unitFilter === 'done' ? u.status === 'done' : u.status !== 'done');
+function weeksHtml(today) {
+  const p = PLAN(), weeks = (p && p.weeks) || [];
+  const cur = weeks.find(w => today >= w.s && today <= w.e);
+  if (!weeksInit) { weeksInit = true; if (cur) openWeeks.add(cur.id); }
+  if (!weeks.length) return '<div class="panel empty">週の情報がありません。</div>';
+  return weeks.map(w => {
+    const us = state.units.filter(u => u.weekId === w.id), shown = us.filter(passFilter);
+    const d = us.filter(u => u.status === 'done').length, pct = us.length ? Math.round(d * 100 / us.length) : 0;
+    return `<details class="panel fold ${cur === w ? 'current' : ''}" data-week="${esc(w.id)}" ${openWeeks.has(w.id) ? 'open' : ''}>
+      <summary><span class="wname">${esc(w.n)}${cur === w ? '<span class="wnow">今週</span>' : ''}</span><span class="wdates">${esc(mdOf(w.s))}〜${esc(mdOf(w.e))}${w.h ? ` ・ 目安 ${esc(w.h)}時間` : ''}</span><span class="wprog mono">${d}/${us.length}</span><span class="progress wbar"><span style="width:${pct}%"></span></span></summary>
+      ${shown.length ? `<ul class="units">${shown.map(u => unitRowHtml(u, today, { showSubject: true, showWeek: false })).join('')}</ul>` : '<div class="empty">この条件の単元はありません</div>'}
+    </details>`;
+  }).join('');
+}
+function reviewHtml(today) {
+  const r = reviewCfg() || {};
+  const due = state.units.map(u => ({ u, ri: reviewInfo(u) })).filter(x => x.ri && x.ri.due).sort((a, b) => a.ri.due.localeCompare(b.ri.due));
+  const weak = state.units.filter(u => u.level === '△' || u.level === '×');
+  const fin = state.units.filter(u => { const x = reviewInfo(u); return x && x.step === 3; });
+  const list = arr => `<ul class="units">${arr.map(u => unitRowHtml(u, today, { showSubject: true })).join('')}</ul>`;
+  return `<div class="panel"><div class="panel-head"><h3>復習の予定</h3><span class="sub">完了から${+r.first || 3}日後に復習1、その${+r.second || 7}日後に復習2</span></div>
+      <div class="legend"><span class="lg-over">赤＝期限切れ</span><span class="lg-due">黄＝今日</span><span>灰＝これから</span><span>ボタンを押すと復習済みになります</span></div>
+      ${due.length ? list(due.map(x => x.u)) : '<div class="empty">予定されている復習はありません。単元を完了にすると、ここに並びます。</div>'}</div>
+    <div class="panel"><div class="panel-head"><h3>理解度が △・× の単元</h3><span class="sub">${weak.length}件 ・ ◎か○になるまで残ります</span></div>${weak.length ? list(weak) : '<div class="empty">△・× の単元はありません。</div>'}</div>
+    ${fin.length ? `<div class="panel"><div class="panel-head"><h3>復習2まで終わった単元</h3><span class="sub">${fin.length}件</span></div>${list(fin)}</div>` : ''}`;
+}
+function bookRefs(k) {
+  const out = [];
+  state.units.forEach(u => {
+    stepsOf(u).forEach((s, i) => { if (s.bk === k) out.push({ u, s, i, done: !!s.done, date: /^\d{4}-/.test(s.done || '') ? s.done : '' }); });
+    (u.refs || []).forEach(s => { if (s.bk === k) out.push({ u, s, i: -1, ref: true, done: u.status === 'done', date: u.doneAt || '' }); });
+  });
+  return out;
+}
+const latestDate = ds => ds.filter(Boolean).sort().pop() || '';
+function statusCell(list) {
+  if (!list.length) return '<span class="st-none">―</span>';
+  if (list.every(x => x.ref)) return list.every(x => x.done) ? '<span class="st-none">参考（単元 済み）</span>' : '<span class="st-none">参考</span>';
+  const d = list.filter(x => x.done).length;
+  if (d === list.length) { const dt = latestDate(list.map(x => x.date)); return `<span class="bk-done">✓ 済み${dt ? ` <span class="mono">${esc(mdOf(dt))}</span>` : ''}</span>`; }
+  if (d > 0) return `<span class="bk-part">途中 <span class="mono">${d}/${list.length}</span></span>`;
+  return '<span class="bk-todo">未</span>';
+}
+function planDates(list) {
+  const ds = [...new Set(list.map(x => x.done ? x.date : x.ref ? (nextPlan(x.u) || '') : (!isNorma(x.s) ? '' : (x.s.plan || ''))).filter(Boolean))].sort();
+  if (!ds.length) return list.some(x => !x.ref && !isNorma(x.s)) ? '余裕があれば' : '';
+  return ds.length > 3 ? `${mdOf(ds[0])}〜${mdOf(ds[ds.length - 1])}` : ds.map(mdOf).join('・');
+}
+function booksHtml() {
+  const p = PLAN(), books = (p && p.books) || [];
+  if (!books.length) return '<div class="panel empty">本の情報がありません。</div>';
+  return books.map(b => {
+    const refs = bookRefs(b.k), lg = ((state.booklog || []).find(x => x.id === b.k) || {}).entries || [];
+    let body = '', prog = '';
+    if (Array.isArray(b.toc) && b.toc.length) {
+      const rows = b.toc.map(([key, name, pg, note]) => ({ key, name, pg, note, list: refs.filter(x => (x.s.k || []).includes(key)) }));
+      const planned = rows.filter(r => r.list.length), fin = planned.filter(r => r.list.every(x => x.done));
+      prog = `${fin.length}/${planned.length} 節`;
+      body = `<div class="bk-wrap"><table class="bk"><thead><tr><th>章・節</th><th>ページ</th><th>予定</th><th>状態</th></tr></thead><tbody>${rows.map(r => `<tr class="${r.list.length ? '' : 'off'}"><td>${esc(r.name)}${r.list.length ? `<details class="sd"><summary>やること ${r.list.filter(x => x.done).length}/${r.list.length}</summary><ul>${r.list.map(x => `<li class="${x.done ? 'sdone' : ''}">${x.done ? '✓' : '□'} ${esc(x.s.t)}${x.date ? ` <span class="mono">${esc(mdOf(x.date))}</span>` : ''}</li>`).join('')}</ul></details>` : ''}</td><td class="mono">${esc(r.pg || '')}</td><td>${r.list.length ? esc(planDates(r.list)) : ''}</td><td>${r.list.length ? statusCell(r.list) : `<span class="st-none">${esc(r.note || '―')}</span>`}</td></tr>`).join('')}</tbody></table></div>`;
+    } else {
+      const byUnit = [];
+      refs.forEach(x => { let g = byUnit.find(y => y.u === x.u); if (!g) { g = { u: x.u, list: [] }; byUnit.push(g); } g.list.push(x); });
+      prog = `${byUnit.filter(g => g.list.every(x => x.done)).length}/${byUnit.length} 単元`;
+      body = byUnit.length ? `<div class="bk-wrap"><table class="bk"><thead><tr><th>単元</th><th>この本でやること</th><th>予定</th><th>状態</th></tr></thead><tbody>${byUnit.map(g => `<tr><td>${esc(g.u.name)}</td><td class="small">${g.list.map(x => `${x.done ? '✓' : '□'} ${esc(x.s.t)}`).join('<br>')}</td><td>${esc(planDates(g.list))}</td><td>${statusCell(g.list)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">この本を使う単元はまだありません。</div>';
+    }
+    const last = latestDate([...refs.map(x => x.date), ...lg.map(e => e.d)]);
+    const log = `<div class="log"><div class="log-h">やったページの記録 <span class="sub">章やページを自由に書けます（例：p.40〜45 例題1〜8）</span></div>
+      <form class="log-f" data-k="${esc(b.k)}"><input type="text" name="t" placeholder="例：3章1 p.83〜92 基本例題10〜18" autocomplete="off" aria-label="${esc(b.n)} にやったページ"><button class="btn" type="submit">記録する</button></form>
+      ${lg.length ? `<ul class="log-l">${lg.map((e, i) => ({ e, i })).reverse().map(({ e, i }) => `<li><span class="mono">${esc(mdOf(e.d))}</span><span>${esc(e.text)}</span><button class="icon-btn" data-action="logdel" data-k="${esc(b.k)}" data-i="${i}" aria-label="この記録を消す">${ICON.x}</button></li>`).join('')}</ul>` : ''}</div>`;
+    return `<details class="panel fold book" data-book="${esc(b.k)}" ${openBooks.has(b.k) ? 'open' : ''}><summary><span class="wname">${esc(b.n)}</span><span class="wdates">${esc(b.role || '')}${last ? ` ・ 最後にやった日 ${esc(mdOf(last))}` : ''}</span><span class="wprog mono">${prog}</span></summary>${body}${log}</details>`;
+  }).join('');
+}
+
+/* ---- today: plan notice, skip button, 応用, reviews due, upcoming days ---- */
+function renderTodayPlan(items) {
+  const box = $('#today-plan'), p = PLAN();
+  if (!p) { box.innerHTML = ''; $('#today-review').hidden = true; $('#today-ahead').hidden = true; return; }
+  const today = todayStr();
+  let h = '';
+  const nt = planNotice;
+  if (nt) h += `<div class="notice" role="status"><span>${nt.kind === 'skip' ? `今日の ${nt.n} 件を ${nt.ds.map(mdOf).join('・')} に回しました。` : `やり残した ${nt.n} 件を ${nt.ds.map(mdOf).join('・')} に振り分けました。`}</span>${nt.kind === 'skip' && nt.undo ? '<button class="linklike" data-action="undo-skip">元に戻す</button>' : ''}<button class="linklike" data-action="notice-x">閉じる</button></div>`;
+  const extra = [];
+  for (const it of items) if (it.kind === 'unit' && it.o.status !== 'done') stepsOf(it.o).forEach((s, i) => { if (!isNorma(s) && !s.done) extra.push({ u: it.o, i }); });
+  if (extra.length) h += `<details class="extra"><summary>余裕があれば：応用 <b class="mono">${extra.length}</b> 件</summary><ul class="steps">${extra.map(x => stepLi(x.u, x.i, {})).join('')}</ul></details>`;
+  if (canReflow()) {
+    const left = pendingSteps().filter(x => x.d <= today).length;
+    h += `<div class="day-foot"><button class="btn skip" data-action="skip-today" ${left ? '' : 'disabled'}>今日はできない → 後日に回す</button><span class="note">チェックしないまま日付が変わった分は、次に開いたときに自動で後日に回ります${planCap(today) > 0 ? '' : '（今日は勉強しない日の設定です）'}</span></div>`;
+  }
+  box.innerHTML = h;
+
+  const rp = $('#today-review'), r = reviewCfg();
+  if (r) {
+    const all = state.units.map(u => ({ u, ri: reviewInfo(u) })).filter(x => x.ri && x.ri.due);
+    const due = all.filter(x => x.ri.due <= today).sort((a, b) => a.ri.due.localeCompare(b.ri.due));
+    const soon = all.filter(x => x.ri.due > today && x.ri.due <= addDaysStr(today, 3)).length;
+    rp.hidden = false;
+    rp.innerHTML = `<div class="panel-head"><h2>期限の来た復習</h2><span class="sub">完了から${+r.first || 3}日後に復習1、その${+r.second || 7}日後に復習2</span></div>`
+      + (due.length ? `<ul class="units">${due.map(x => unitRowHtml(x.u, today, { showSubject: true, compact: true })).join('')}</ul>` : `<div class="empty">今日やる復習はありません。${soon ? `3日以内に ${soon} 件の期限があります。` : '単元を完了にすると、ここに復習の期限が出ます。'}</div>`);
+  } else rp.hidden = true;
+
+  const ah = $('#today-ahead');
+  if (canReflow()) {
+    const days = availDays(addDaysStr(today, 1), 10), ps = pendingSteps();
+    const c = p.capacity || {};
+    ah.hidden = false;
+    const wasOpen = ah.open;
+    ah.innerHTML = `<summary><h2>これからの予定</h2><span class="sub">勉強する日だけ・回した分も含む</span></summary><ul class="ahead">${days.map(d => {
+      const list = ps.filter(x => x.d === d), by = {};
+      list.forEach(x => { by[x.u.subjectId] = (by[x.u.subjectId] || 0) + 1; });
+      const tag = (c.full || []).includes(d) ? '全日' : (c.half || []).includes(d) ? '半分' : '';
+      const dt = parseYmd(d);
+      return `<li><span class="ad">${dt.getMonth() + 1}/${dt.getDate()}<small>${WD[dt.getDay()]}</small>${tag ? `<span class="tag">${tag}</span>` : ''}</span><span class="chips-s">${Object.entries(by).map(([sid, n]) => { const s = subjOf(sid); return `<span class="c" style="--sc:${s ? slot(s.color) : 'var(--muted)'}">${esc(s ? s.name : '他')} ${n}</span>`; }).join('') || '<span class="muted">予定なし</span>'}</span><span class="mono muted">${list.length} 件</span></li>`;
+    }).join('')}</ul>`;
+    ah.open = wasOpen;
+  } else ah.hidden = true;
+}
+function renderCountdown() {
+  const p = PLAN(), el = $('#hdr-count');
+  if (!p || !p.end) { el.hidden = true; return; }
+  const n = Math.round((parseYmd(p.end) - parseYmd(todayStr())) / 864e5);
+  el.hidden = n < 0;
+  el.textContent = `${p.countdownLabel || '残り'} ${n}日`;
 }
 
 /* ================= units with steps (やること) ================= */
@@ -1033,8 +1638,10 @@ function setStepDone(u, i, done) {
 }
 function stepLi(u, i, opts = {}) {
   const s = stepsOf(u)[i];
+  const moved = !s.done && s.base && s.plan && s.base !== s.plan && isNorma(s) ? `<em class="moved">↪ ${esc(mdOf(s.base))}の分</em>` : '';
   const meta = [s.b ? esc(s.b) : '', !isNorma(s) ? '<em class="kind">応用</em>' : '', opts.late ? `<em class="late">予定 ${esc(mdOf(s.plan))}</em>` : '',
-    opts.showPlan && !s.done && s.plan && isNorma(s) ? `<em class="when">予定 ${esc(mdOf(s.plan))}</em>` : '', s.done && /^\d{4}-/.test(s.done) && opts.showDone ? `<em class="when">${esc(mdOf(s.done))} 済</em>` : ''].filter(Boolean).join(' ');
+    opts.showPlan && !s.done && s.plan && isNorma(s) ? `<em class="when ${s.plan < todayStr() ? 'late' : ''}">${s.plan === todayStr() ? '今日' : '予定 ' + esc(mdOf(s.plan))}</em>` : '', moved,
+    s.done && /^\d{4}-/.test(s.done) && opts.showDone ? `<em class="when">${esc(mdOf(s.done))} 済</em>` : ''].filter(Boolean).join(' ');
   return `<li class="step ${s.done ? 'done' : ''}">
     <label class="chk sm"><input type="checkbox" data-action="toggle-step" data-id="${esc(u.id)}" data-i="${i}" ${s.done ? 'checked' : ''} aria-label="${esc(s.t)} を済みにする"><span class="box"></span></label>
     <span class="s-body"><span class="s-t">${esc(s.t)}</span>${meta ? `<span class="s-meta">${meta}</span>` : ''}</span>
@@ -1114,6 +1721,7 @@ function renderToday() {
   if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
 
   $('#welcome').hidden = !!(state.units.length || state.tasks.length || Object.keys(ROUTES).length);
+  renderTodayPlan(items);
   renderNextTrain();
   renderTodayStudy();
 }
@@ -1140,6 +1748,12 @@ const openSteps = new Set();
 const ST_LABEL = { todo: '未着手', doing: '学習中', done: '完了' };
 function renderUnits() {
   const today = todayStr();
+  const p = PLAN();
+  if (!p && unitView !== 'subject') unitView = 'subject';
+  $('#unit-views').hidden = !p;
+  $$('#unit-views button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === unitView ? 'true' : 'false'));
+  $('#unit-filter').hidden = unitView === 'review' || unitView === 'book';
+  $('#units-add').hidden = unitView !== 'subject';
   $('#sample-banner').hidden = !hasSamples();
   $$('#unit-filter button').forEach(b => b.setAttribute('aria-pressed', b.dataset.filter === unitFilter ? 'true' : 'false'));
   const total = state.units.length, done = state.units.filter(u => u.status === 'done').length, doing = state.units.filter(u => u.status === 'doing').length;
@@ -1150,31 +1764,16 @@ function renderUnits() {
     <div class="sub" style="margin-top:8px">学習中 ${doing} ・ 未着手 ${total - done - doing} ・ 今日の予定 ${todayN}</div>`
     : `<div class="empty" style="padding:2px">まだ単元がありません。下で科目を作って単元を追加するか、右上の「データ」から自分のデータファイルを読み込めます。</div>`;
 
+  if (unitView !== 'subject') {
+    $('#subjects').innerHTML = unitView === 'week' ? weeksHtml(today) : unitView === 'review' ? reviewHtml(today) : booksHtml();
+    return;
+  }
   const html = state.subjects.map(s => {
     const us = state.units.filter(u => u.subjectId === s.id);
     const d = us.filter(u => u.status === 'done').length;
     const mins = us.reduce((a, u) => a + unitMinutes(u.id), 0) + state.sessions.filter(x => x.j === s.id && !x.u).reduce((a, x) => a + x.m, 0);
     const shown = us.filter(u => unitFilter === 'all' || (unitFilter === 'done' ? u.status === 'done' : u.status !== 'done'));
-    const rows = shown.map(u => {
-      const m = unitMinutes(u.id), st = stepsOf(u);
-      const norma = st.filter(isNorma), nDone = norma.filter(x => x.done).length;
-      const np = nextPlan(u), open = openSteps.has(u.id);
-      const meta = [u.week ? esc(u.week) : '', u.book ? esc(u.book) : '', u.est ? `目安${u.est}分` : '', m >= 1 ? `記録${fmtMin(m)}` : '', u.doneAt && u.status === 'done' ? `${esc(mdOf(u.doneAt))} 完了` : ''].filter(Boolean).join(' · ');
-      const stepsBtn = st.length ? `<button class="steps-toggle" data-action="toggle-steps" data-id="${esc(u.id)}" aria-expanded="${open}">やること <b>${nDone}/${norma.length}</b>${st.length > norma.length ? `<small>＋応用${st.length - norma.length}</small>` : ''}<span class="chev">›</span></button>` : '';
-      const stepsList = st.length && open ? `<ul class="steps">${st.map((x, i) => stepLi(u, i, { showPlan: true, showDone: true })).join('')}</ul>${u.ref ? `<div class="note ref">参考: ${esc(u.ref)}</div>` : ''}` : '';
-      return `<li class="unit ${u.status === 'done' ? 'done' : ''}">
-        <label class="chk"><input type="checkbox" data-action="toggle-unit" data-id="${esc(u.id)}" ${u.status === 'done' ? 'checked' : ''} aria-label="${esc(u.name)} を完了にする"><span class="box"></span></label>
-        <div class="i-main"><div class="i-title">${esc(u.name)}${u.sample ? '<span class="badge ex">例</span>' : ''}</div>
-          <div class="i-meta">${meta}</div>${stepsBtn}</div>
-        ${stepsList || u.note ? `<div class="u-more">${stepsList}${u.note ? `<div class="note">メモ: ${esc(u.note)}</div>` : ''}</div>` : ''}
-        <div class="unit-ctrls">
-          <button class="st st-${u.status}" data-action="unit-status" data-id="${esc(u.id)}" title="押すと状態が切り替わります">${ST_LABEL[u.status] || '未着手'}</button>
-          ${st.length ? (np ? `<span class="next-plan">次 ${esc(mdOf(np))}</span>` : '') : `<input type="date" class="u-date" data-change="unit-date" data-id="${esc(u.id)}" value="${esc(u.plan || '')}" aria-label="${esc(u.name)} の予定日">`}
-          <button class="today-btn ${u.plan === today ? 'on' : ''}" data-action="unit-today" data-id="${esc(u.id)}" aria-pressed="${u.plan === today}">今日</button>
-          <button class="icon-btn" data-action="edit-unit" data-id="${esc(u.id)}" aria-label="${esc(u.name)} を編集">${ICON.edit}</button>
-        </div>
-      </li>`;
-    }).join('');
+    const rows = shown.map(u => unitRowHtml(u, today, {})).join('');
     return `<div class="panel subject" style="--sc:${slot(s.color)}">
       <div class="subj-head">
         <i class="dot"></i><h3>${esc(s.name)}${s.sample ? '<span class="badge ex">例</span>' : ''}</h3>
@@ -1437,6 +2036,7 @@ function showImportPreview(p) {
   box.innerHTML = `<div class="import-box"><b>${esc(p.title || 'データファイル')}</b><div class="sub">${esc(packSummary(p))}</div>
     ${p.transit ? opt('d-transit', '電車の時刻表（いまの時刻表と入れ替え）', true) : ''}
     ${p.bus ? opt('d-bus', 'バスの時刻表（いまのバスと入れ替え）', true) : ''}
+    ${p.plan ? opt('d-plan', '学習計画（自動の振り分け・復習・本の目次）', true) : ''}
     ${p.units ? opt('d-units', '科目と単元', true) + `<div class="radios"><label><input type="radio" name="d-um" value="replace" checked> いまの単元と入れ替える</label><label><input type="radio" name="d-um" value="merge"> いまの単元に追加する</label></div>` : ''}
     ${p.log ? opt('d-log', '勉強の記録（いまの記録と入れ替え）', true) : ''}
     ${p.settings ? opt('d-settings', '設定（乗換時間・タイマー）', true) : ''}
@@ -1448,7 +2048,10 @@ function cleanUnits(list, subjIds) {
   const ok = s => ['todo', 'doing', 'done'].includes(s) ? s : 'todo';
   return list.filter(u => u && u.id && u.name && subjIds.has(u.subjectId)).map(u => ({
     ...u, id: String(u.id), name: String(u.name).slice(0, 200), status: ok(u.status), plan: relDate(u.plan), doneAt: relDate(u.doneAt),
-    steps: Array.isArray(u.steps) ? u.steps.filter(s => s && s.t).map(s => ({ t: String(s.t), b: s.b ? String(s.b) : '', kind: s.kind === 'a' ? 'a' : 'n', plan: relDate(s.plan), done: relDate(s.done) })) : []
+    steps: Array.isArray(u.steps) ? u.steps.filter(s => s && s.t).map(s => ({
+      t: String(s.t), b: s.b ? String(s.b) : '', bk: s.bk ? String(s.bk) : '', k: Array.isArray(s.k) ? s.k.map(String) : [],
+      kind: s.kind === 'a' ? 'a' : 'n', plan: relDate(s.plan), base: relDate(s.base), done: relDate(s.done)
+    })) : []
   }));
 }
 function applyPendingPack() {
@@ -1457,7 +2060,9 @@ function applyPendingPack() {
   let transitChanged = false;
   if (on('d-transit')) { PACK.transit = p.transit; transitChanged = true; }
   if (on('d-bus')) { PACK.bus = p.bus; transitChanged = true; }
+  if (on('d-plan')) { PACK.plan = p.plan; transitChanged = true; perCapCache = null; reflowDone = false; }
   if (transitChanged) {
+    PACK.rev = Date.now();
     if (!savePack()) toast('時刻表をこの端末に保存できませんでした（ブラウザの保存容量を確認してください）');
     rebuildData();
     state.settings.xfer = {};
@@ -1470,6 +2075,7 @@ function applyPendingPack() {
       state.subjects = subs;
       state.units = cleanUnits(p.units.units || [], new Set(subs.map(s => s.id)));
       if (Array.isArray(p.units.tasks)) state.tasks = p.units.tasks.filter(t => t && t.id && t.text).map(t => ({ ...t, date: relDate(t.date) }));
+      if (Array.isArray(p.units.booklog)) state.booklog = p.units.booklog.filter(b => b && b.id && Array.isArray(b.entries));
     } else {
       const have = new Set(state.subjects.map(s => s.id));
       for (const s of subs) if (!have.has(s.id)) state.subjects.push(s);
@@ -1486,10 +2092,19 @@ function applyPendingPack() {
 function exportPack() {
   return {
     format: 'manabi-data', version: 1, title: 'まなび時刻表のバックアップ', exportedAt: new Date().toISOString(),
-    transit: PACK.transit || undefined, bus: PACK.bus || undefined,
-    units: { subjects: state.subjects, units: state.units, tasks: state.tasks },
+    transit: PACK.transit || undefined, bus: PACK.bus || undefined, plan: PACK.plan || undefined,
+    units: { subjects: state.subjects, units: state.units, tasks: state.tasks, booklog: state.booklog },
     log: { sessions: state.sessions, archive: state.archive }, settings: state.settings
   };
+}
+function syncSectionHtml() {
+  const on = ghOn();
+  return `<hr class="sep"><h4 class="dm-h">PCとスマホの同期（GitHub）</h4>
+    <p class="note" style="margin:0">GitHub の<b>非公開</b>リポジトリに、進み具合と時刻表データを保存します。PCとスマホで同じ設定をすると、どちらで変えても数秒〜1分ほどでもう一方に反映されます。トークンはこの端末の中だけに保存されます。</p>
+    <label>リポジトリ<input type="text" id="sy-repo" placeholder="ユーザー名/リポジトリ名" value="${esc((syncCfg && syncCfg.repo) || '')}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <label>アクセストークン<input type="password" id="sy-token" placeholder="${on ? '設定済み（変えるときだけ入力）' : 'github_pat_ で始まる文字列'}" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    <div class="data-row"><button class="btn primary" data-modal="sync-connect">${on ? '保存して同期' : '接続して同期'}</button>${on ? '<button class="btn" data-modal="sync-now">今すぐ同期</button><button class="linklike danger-link" data-modal="sync-off">この端末の同期をやめる</button>' : ''}</div>
+    <div class="sub" id="sy-status">${esc(syncStatusText())}</div>`;
 }
 function openDataModal() {
   const nTrain = Object.values(ROUTES).filter(r => r.kind === 'train').length, nBus = Object.values(ROUTES).filter(r => r.kind === 'bus').length;
@@ -1510,10 +2125,17 @@ function openDataModal() {
       <button class="btn" data-modal="copy">バックアップをコピー</button>
     </div>
     <p class="note" style="margin:0">データはこの端末のブラウザの中だけに保存され、どこにも送られません。別の端末に移すときは、バックアップを保存してその端末で読み込んでください。</p>
-    ${nTrain || nBus ? '<button class="linklike danger-link" data-modal="clear-transit">この端末の時刻表データを消す</button>' : ''}`,
+    ${nTrain || nBus ? '<button class="linklike danger-link" data-modal="clear-transit">この端末の時刻表データを消す</button>' : ''}
+    ${window.claude && window.claude.use ? '' : syncSectionHtml()}`,
     [{ id: 'close', label: '閉じる' }],
     a => {
       if (a === 'close') return true;
+      if (a === 'sync-connect') { connectSync(); return false; }
+      if (a === 'sync-now') { ghSync(); const st = $('#sy-status'); if (st) st.textContent = '同期しています…'; return false; }
+      if (a === 'sync-off') {
+        if (!$('#sy-off-ok')) { $('#sy-status').innerHTML = 'この端末の同期をやめます（データはこの端末に残り、GitHub 上のデータも消えません）。<button class="btn danger" data-modal="sync-off" id="sy-off-ok">やめる</button>'; return false; }
+        syncCfg = null; saveSyncCfg(); setSync('local'); toast('この端末の同期をやめました'); return true;
+      }
       if (a === 'apply') { applyPendingPack(); return true; }
       if (a === 'paste') { const r = parsePack($('#d-text').value); if (r.error) toast(r.error); else showImportPreview(r.pack); return false; }
       if (a === 'sample') {
@@ -1744,6 +2366,8 @@ function renderWeek() {
 
 /* ================= render all ================= */
 function render() {
+  const ae = document.activeElement;
+  if (ae && ae.dataset && ae.dataset.memo) { renderHeader(); return; }  // don't redraw while a memo is being typed
   renderHeader();
   if (view === 'today') renderToday();
   else if (view === 'units') renderUnits();
@@ -1754,8 +2378,15 @@ function render() {
 /* ================= actions ================= */
 function setUnitDone(u, done) {
   const today = todayStr();
-  if (done) { u.status = 'done'; u.doneAt = today; if (u.plan && u.plan < today) u.plan = today; }
-  else { u.status = unitMinutes(u.id) >= 1 ? 'doing' : 'todo'; u.doneAt = null; }
+  if (done) {
+    u.status = 'done'; u.doneAt = today;
+    if (u.plan && u.plan < today) u.plan = today;
+    const st = stepsOf(u), norma = st.filter(isNorma);
+    for (const x of (norma.length ? norma : st)) if (!x.done) x.done = today;
+  } else {
+    u.status = unitMinutes(u.id) >= 1 || stepsOf(u).some(x => x.done) ? 'doing' : 'todo';
+    u.doneAt = null; delete u.r1At; delete u.r2At;
+  }
 }
 function nextColor() {
   const used = state.subjects.map(s => s.color);
@@ -1844,6 +2475,15 @@ document.addEventListener('click', e => {
     case 'goto': showView(el.dataset.view); break;
     case 'nt-auto': ntWrite(null); renderNextTrain(); break;
     case 'open-data': openDataModal(); break;
+    case 'uview': unitView = el.dataset.v || 'subject'; renderUnits(); break;
+    case 'level': { const u = unitOf(id); if (!u) break; if (u.level === el.dataset.l) delete u.level; else u.level = el.dataset.l; commit(); break; }
+    case 'r1': { const u = unitOf(id); if (!u) break; if (u.r1At) { delete u.r1At; delete u.r2At; } else u.r1At = todayStr(); commit(); break; }
+    case 'r2': { const u = unitOf(id); if (!u) break; if (u.r2At) delete u.r2At; else u.r2At = todayStr(); commit(); break; }
+    case 'memo': { openMemo = openMemo === id ? null : id; render(); if (openMemo) { const t = document.getElementById('memo-' + id); if (t) t.focus(); } break; }
+    case 'skip-today': skipToday(); break;
+    case 'undo-skip': undoSkip(); break;
+    case 'notice-x': planNotice = null; render(); break;
+    case 'logdel': { const b = state.booklog.find(x => x.id === el.dataset.k); if (b) { const k = +el.dataset.i; b.entries = b.entries.filter((_, n) => n !== k); commit(); } break; }
     case 'toggle-steps': { if (openSteps.has(id)) openSteps.delete(id); else openSteps.add(id); renderUnits(); break; }
     case 'xfer-reset': state.settings.xfer = {}; commit({ settings: true }); break;
     case 'open-route': {
@@ -1952,6 +2592,43 @@ document.addEventListener('change', e => {
   }
 });
 
+document.addEventListener('submit', e => {
+  const f = e.target && e.target.closest ? e.target.closest('form.log-f') : null;
+  if (!f) return;
+  e.preventDefault();
+  const inp = f.querySelector('input'), text = inp.value.trim();
+  if (!text) return;
+  let b = state.booklog.find(x => x.id === f.dataset.k);
+  if (!b) { b = { id: f.dataset.k, entries: [] }; state.booklog.push(b); }
+  b.entries = [...b.entries, { d: todayStr(), text: text.slice(0, 200) }].slice(-200);
+  inp.value = '';
+  commit();
+});
+let memoTimer = null;
+function saveMemo(t, redraw) {
+  const u = unitOf(t.dataset.memo);
+  if (!u || (u.note || '') === t.value) return;
+  if (t.value) u.note = t.value; else delete u.note;
+  commit({ noRender: !redraw });
+}
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (!t.dataset || !t.dataset.memo) return;
+  clearTimeout(memoTimer);
+  memoTimer = setTimeout(() => saveMemo(t, false), 800);
+});
+document.addEventListener('focusout', e => {
+  const t = e.target;
+  if (!t.dataset || !t.dataset.memo) return;
+  clearTimeout(memoTimer);
+  setTimeout(() => saveMemo(t, true), 0);
+});
+document.addEventListener('toggle', e => {
+  const d = e.target;
+  if (!d.matches) return;
+  if (d.matches('details[data-week]')) { if (d.open) openWeeks.add(d.dataset.week); else openWeeks.delete(d.dataset.week); }
+  if (d.matches('details[data-book]')) { if (d.open) openBooks.add(d.dataset.book); else openBooks.delete(d.dataset.book); }
+}, true);
 $('#f-task').addEventListener('submit', e => {
   e.preventDefault();
   const v = $('#task-input').value.trim();
@@ -2017,6 +2694,7 @@ setInterval(() => {
 /* ================= boot ================= */
 buildTabs();
 rebuildData();
+snapMap = snapOf(state);
 setSync('connecting');
 showView((location.hash || '#today').slice(1), false);
 if (state.timer && state.timer.running) holdWake(true);
