@@ -1,0 +1,16 @@
+{
+  "name": "まなび時刻表",
+  "short_name": "まなび",
+  "description": "単元チェック・今日やること・通学経路・勉強タイマーをまとめた勉強用アプリ",
+  "lang": "ja",
+  "start_url": "./#today",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F1F3EF",
+  "theme_color": "#0D6A4F",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

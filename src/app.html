@@ -1,0 +1,2008 @@
+<title>まなび時刻表</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: phone = one column + bottom tab bar; wide = top bar with tabs, main column + side rail.
+   Times are set in mono like a station timetable; line colors (南武・中央・京王) are the only loud color. */
+:root {
+  --bg: #F1F3EF;
+  --surface: #FFFFFF;
+  --sunken: #E8EBE5;
+  --ink: #131A20;
+  --ink-2: #46505A;
+  --muted: #747D86;
+  --rule: #DADED6;
+  --rule-2: #C2C8BF;
+  --accent: #0D6A4F;
+  --accent-2: #0A553F;
+  --accent-soft: #DCEDE5;
+  --on-accent: #FFFFFF;
+  --hot: #EC5A24;
+  --pink: #D3006D;
+  --bus: #2E62B0;
+  --danger: #C03A31;
+  --focus: #2A78D6;
+  --grid: #E2E5DE;
+  --axis: #C2C8BF;
+  --c0: #2a78d6; --c1: #eb6834; --c2: #1baf7a; --c3: #eda100;
+  --c4: #e87ba4; --c5: #008300; --c6: #6250d6; --c7: #e34948;
+  --shadow: 0 1px 2px rgba(19,26,32,.05), 0 6px 18px rgba(19,26,32,.05);
+  --f-body: "IBM Plex Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --f-brand: "Dela Gothic One", "IBM Plex Sans JP", "Hiragino Sans", sans-serif;
+  --r: 14px;
+  --r-sm: 9px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1215; --surface: #161B1F; --sunken: #1D2328; --ink: #E8ECEE; --ink-2: #B3BCC3; --muted: #85909A;
+    --rule: #283036; --rule-2: #384148; --accent: #3AB98B; --accent-2: #5DCFA4; --accent-soft: #153429; --on-accent: #04130D;
+    --hot: #FF7646; --pink: #FF4EA2; --bus: #6F9FE8; --danger: #F06B61; --focus: #5598e7; --grid: #242A2F; --axis: #384148;
+    --c0: #3987e5; --c1: #d95926; --c2: #199e70; --c3: #c98500; --c4: #d55181; --c5: #0ca30c; --c6: #9085e9; --c7: #e66767;
+    --shadow: 0 1px 0 rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1215; --surface: #161B1F; --sunken: #1D2328; --ink: #E8ECEE; --ink-2: #B3BCC3; --muted: #85909A;
+  --rule: #283036; --rule-2: #384148; --accent: #3AB98B; --accent-2: #5DCFA4; --accent-soft: #153429; --on-accent: #04130D;
+  --hot: #FF7646; --pink: #FF4EA2; --bus: #6F9FE8; --danger: #F06B61; --focus: #5598e7; --grid: #242A2F; --axis: #384148;
+  --c0: #3987e5; --c1: #d95926; --c2: #199e70; --c3: #c98500; --c4: #d55181; --c5: #0ca30c; --c6: #9085e9; --c7: #e66767;
+  --shadow: 0 1px 0 rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); }
+body { font-family: var(--f-body); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.3; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+h3 { font-size: .98rem; font-weight: 700; }
+.mono, .t { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* ---------- top bar ---------- */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--rule); }
+.top .wrap { display: flex; align-items: center; gap: 12px; padding-block: 10px; min-height: 58px; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.brand b { font-family: var(--f-brand); font-weight: 400; font-size: 1.25rem; letter-spacing: .02em; white-space: nowrap; }
+.brand .date { color: var(--ink-2); font-size: .88rem; white-space: nowrap; }
+.chips { display: flex; gap: 6px; align-items: center; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; line-height: 1; padding: 6px 9px; border-radius: 999px; background: var(--sunken); color: var(--ink-2); white-space: nowrap; border: 0; }
+.chip .led { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.chip.ok .led { background: var(--accent); }
+.chip.warn .led { background: var(--hot); }
+.chip.run { background: var(--accent); color: var(--on-accent); font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+.chip.day-hd { background: color-mix(in srgb, var(--pink) 14%, transparent); color: var(--ink); }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 4px; }
+.tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; border: 0; background: none; color: var(--muted); padding: 6px 4px; border-radius: 10px; font-size: .72rem; font-weight: 500; white-space: nowrap; }
+.tab svg { width: 22px; height: 22px; }
+.tab[aria-current="page"] { color: var(--accent); }
+.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--rule); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.bottom-nav .tabs { max-width: 560px; margin: 0 auto; padding-block: 4px; }
+.top-tabs { display: none; }
+main { padding-block: 18px calc(88px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 860px) {
+  .bottom-nav { display: none; }
+  .top-tabs { display: flex; order: 2; margin-left: 8px; }
+  .top-tabs .tab { flex-direction: row; gap: 6px; font-size: .9rem; padding: 7px 12px; }
+  .top-tabs .tab svg { width: 18px; height: 18px; }
+  .top-tabs .tab[aria-current="page"] { background: var(--accent-soft); }
+  .chips { order: 3; }
+  main { padding-block: 24px 48px; }
+}
+
+/* ---------- panels ---------- */
+.view { display: grid; gap: 16px; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); min-width: 0; }
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.sub { color: var(--ink-2); font-size: .85rem; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: .72rem; letter-spacing: .08em; color: var(--muted); font-weight: 500; }
+.two-col { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 860px) { .two-col { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+.stack { display: grid; gap: 16px; min-width: 0; }
+
+.btn { border: 1px solid var(--rule-2); background: var(--surface); border-radius: var(--r-sm); padding: 8px 14px; font-weight: 500; font-size: .9rem; white-space: nowrap; }
+.btn:hover { border-color: var(--ink-2); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn.primary:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
+.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.icon-btn { border: 0; background: transparent; color: var(--muted); width: 34px; height: 34px; border-radius: 8px; display: inline-grid; place-items: center; flex: none; }
+.icon-btn:hover { background: var(--sunken); color: var(--ink); }
+.icon-btn svg { width: 18px; height: 18px; }
+input[type="text"], input:not([type]), input[type="number"], input[type="date"], input[type="time"], select, textarea {
+  border: 1px solid var(--rule-2); background: var(--surface); border-radius: var(--r-sm); padding: 8px 10px; min-width: 0; font-size: .92rem;
+}
+textarea { width: 100%; resize: vertical; }
+.add-row { display: flex; gap: 8px; margin-top: 10px; }
+.add-row > input, .add-row > select { flex: 1; }
+
+.seg { display: inline-flex; background: var(--sunken); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-size: .86rem; color: var(--ink-2); white-space: nowrap; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+.progress { height: 6px; border-radius: 3px; background: var(--sunken); overflow: hidden; }
+.progress > span { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; }
+.badge { display: inline-block; font-size: .68rem; line-height: 1; padding: 3px 6px; border-radius: 5px; background: var(--sunken); color: var(--ink-2); vertical-align: 2px; margin-left: 4px; font-weight: 500; }
+.badge.ex { background: color-mix(in srgb, var(--c3) 22%, transparent); color: var(--ink); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; background: var(--sc, var(--muted)); flex: none; }
+
+/* ---------- checklist items ---------- */
+.items { list-style: none; margin: 0; padding: 0; display: grid; }
+.item { display: flex; align-items: center; gap: 10px; padding: 10px 2px; border-top: 1px solid var(--rule); min-width: 0; }
+.items > .item:first-child { border-top: 0; }
+.chk { position: relative; display: inline-grid; place-items: center; width: 26px; height: 26px; flex: none; cursor: pointer; }
+.chk input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.chk .box { width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--rule-2); display: grid; place-items: center; transition: background .15s, border-color .15s; }
+.chk input:checked + .box { background: var(--accent); border-color: var(--accent); }
+.chk input:checked + .box::after { content: ""; width: 10px; height: 6px; border-left: 2.5px solid var(--on-accent); border-bottom: 2.5px solid var(--on-accent); transform: translateY(-1px) rotate(-45deg); }
+.chk input:focus-visible + .box { outline: 2px solid var(--focus); outline-offset: 2px; }
+.i-main { flex: 1; min-width: 0; }
+.i-title { font-weight: 500; overflow-wrap: anywhere; }
+.i-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: .8rem; color: var(--muted); }
+.item.done .i-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule-2); }
+.play { border: 1px solid var(--rule-2); background: var(--surface); color: var(--accent); border-radius: 999px; height: 32px; padding: 0 11px 0 9px; display: inline-flex; align-items: center; gap: 4px; font-size: .8rem; font-weight: 600; flex: none; }
+.play svg { width: 14px; height: 14px; }
+.play:hover { border-color: var(--accent); }
+.play.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.carry { margin-top: 14px; border-top: 1px dashed var(--rule-2); padding-top: 10px; }
+.carry h3 { font-size: .82rem; color: var(--hot); font-weight: 700; margin-bottom: 2px; }
+.empty { color: var(--muted); font-size: .9rem; padding: 14px 4px; }
+.stat-row { display: flex; gap: 18px; flex-wrap: wrap; margin: 2px 0 12px; }
+.stat b { display: block; font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 1.35rem; font-weight: 600; line-height: 1.2; }
+.stat span { font-size: .75rem; color: var(--muted); }
+
+/* ---------- units ---------- */
+.subject { padding: 0; overflow: hidden; }
+.subj-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; flex-wrap: wrap; }
+.subj-head .dot { width: 12px; height: 12px; border-radius: 4px; }
+.subj-head h3 { font-size: 1.02rem; min-width: 0; overflow-wrap: anywhere; }
+.subj-head .meta { color: var(--muted); font-size: .8rem; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.subj-head .grow { flex: 1; }
+.subj-bar { height: 4px; background: var(--sunken); margin: 0 16px 4px; border-radius: 2px; overflow: hidden; }
+.subj-bar > span { display: block; height: 100%; background: var(--sc); border-radius: 2px; }
+.units { list-style: none; margin: 0; padding: 0 8px 8px 16px; }
+.unit { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+.unit .i-main { flex: 1 1 180px; }
+.unit.done .i-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule-2); }
+.unit-ctrls { display: flex; align-items: center; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.st { border: 0; border-radius: 999px; font-size: .74rem; padding: 4px 9px; font-weight: 600; white-space: nowrap; }
+.st-todo { background: var(--sunken); color: var(--ink-2); }
+.st-doing { background: color-mix(in srgb, var(--c3) 24%, transparent); color: var(--ink); }
+.st-done { background: var(--accent-soft); color: var(--accent); }
+.u-date { font-size: .8rem !important; padding: 4px 6px !important; width: 9.4em; }
+.today-btn { border: 1px solid var(--rule-2); background: var(--surface); border-radius: 999px; font-size: .76rem; padding: 4px 10px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.today-btn.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.banner { display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; background: color-mix(in srgb, var(--c3) 16%, var(--surface)); border: 1px solid color-mix(in srgb, var(--c3) 40%, transparent); border-radius: var(--r); padding: 10px 14px; font-size: .88rem; }
+.add-panel form { display: grid; gap: 8px; margin-top: 8px; }
+.add-panel .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.add-panel .row > * { flex: 1 1 160px; }
+.swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+.swatch { width: 28px; height: 28px; border-radius: 8px; border: 2px solid transparent; background: var(--sc); }
+.swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 2px var(--surface); }
+
+/* ---------- train ---------- */
+.route-pick { display: grid; gap: 10px; grid-template-columns: minmax(0,1fr); }
+@media (min-width: 640px) { .route-pick { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } .rp-group.bus { grid-column: 1 / -1; } }
+@media (min-width: 1000px) { .route-pick { grid-template-columns: repeat(3, minmax(0,1fr)); } .rp-group.bus { grid-column: auto; } }
+.rp-group.bus .eyebrow { color: var(--bus); }
+.rp-group { display: grid; gap: 6px; }
+.rp-group .eyebrow { padding-left: 2px; }
+.rp-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.rp { border: 1px solid var(--rule-2); background: var(--surface); border-radius: var(--r-sm); padding: 9px 8px; text-align: left; font-weight: 700; font-size: .92rem; line-height: 1.3; min-width: 0; }
+.rp small { display: block; font-weight: 400; color: var(--muted); font-size: .72rem; margin-top: 2px; }
+.rp[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.query { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.query .grow { flex: 1; }
+.linemap { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 4px 2px 2px; font-size: .8rem; }
+.lm-st { display: grid; justify-items: center; gap: 2px; flex: none; min-width: 64px; text-align: center; }
+.lm-st i { width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--ink); background: var(--surface); }
+.lm-st span { white-space: nowrap; font-weight: 500; }
+.lm-seg { flex: 1 1 60px; min-width: 50px; height: 6px; border-radius: 3px; background: var(--lc); margin-bottom: 20px; }
+.lm-walk { flex: 0 1 40px; min-width: 32px; border-top: 3px dotted var(--muted); margin-bottom: 20px; }
+.results { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.res { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.res.best { border-color: var(--accent); }
+.res-head { width: 100%; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 0; background: transparent; text-align: left; flex-wrap: wrap; }
+.res-times { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 1.45rem; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+.res-times .arr-sym { color: var(--muted); font-weight: 500; margin: 0 6px; font-size: 1.1rem; }
+.res-dur { font-size: .85rem; color: var(--ink-2); white-space: nowrap; }
+.res-dur b { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 1rem; color: var(--ink); }
+.res-cd { margin-left: auto; font-size: .8rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.res-cd.soon { color: var(--hot); }
+.res-tags { display: flex; gap: 6px; flex-wrap: wrap; width: 100%; font-size: .75rem; color: var(--muted); }
+.res-tags .lt { display: inline-flex; align-items: center; gap: 5px; }
+.res-tags .lt::before { content: ""; width: 14px; height: 4px; border-radius: 2px; background: var(--lc); }
+.res-body { padding: 4px 14px 14px; border-top: 1px solid var(--rule); }
+.tl { display: grid; grid-template-columns: 3.4em 18px minmax(0,1fr); column-gap: 10px; align-items: center; margin-top: 10px; }
+.tl .tm { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+.tl .nd { justify-self: center; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--lc, var(--ink)); background: var(--surface); }
+.tl .st-name { font-weight: 700; }
+.tl .st-name small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+.tl .rail { justify-self: center; width: 6px; height: 100%; min-height: 40px; background: var(--lc); border-radius: 3px; }
+.tl .walk { justify-self: center; width: 0; height: 100%; min-height: 34px; border-left: 3px dotted var(--muted); }
+.tl .ride, .tl .xfer { padding: 6px 0; font-size: .84rem; color: var(--ink-2); }
+.tl .ride b.ln { color: var(--ink); }
+.tl .xfer { color: var(--ink-2); }
+.tag { display: inline-block; font-size: .68rem; padding: 2px 6px; border-radius: 4px; background: var(--sunken); color: var(--ink-2); margin-left: 4px; font-weight: 600; }
+.tag.first { background: var(--accent-soft); color: var(--accent); }
+.tag.exp { background: color-mix(in srgb, var(--pink) 14%, transparent); color: var(--ink); }
+.tag.bus { background: color-mix(in srgb, var(--bus) 16%, transparent); color: var(--ink); }
+.tag.off { background: var(--sunken); color: var(--muted); }
+.tag.rush { background: color-mix(in srgb, var(--hot) 16%, transparent); color: var(--ink); }
+.note { font-size: .78rem; color: var(--muted); line-height: 1.6; }
+.next-day { font-size: .82rem; color: var(--hot); font-weight: 700; }
+.settings-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 12px; }
+.settings-grid label { display: grid; gap: 4px; font-size: .82rem; color: var(--ink-2); }
+.settings-grid input { width: 100%; }
+details > summary { cursor: pointer; font-weight: 700; font-size: .92rem; }
+.mini-res { display: grid; gap: 0; }
+.nt-mode { font-size: .78rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline; }
+.nt-mode b { color: var(--ink-2); font-weight: 600; }
+.nt-route { margin-top: 12px; }
+.nt-route + .nt-route { border-top: 1px solid var(--rule); padding-top: 10px; }
+.nt-rhead { width: 100%; border: 0; background: none; padding: 0 0 2px; display: flex; align-items: center; gap: 8px; text-align: left; font-weight: 700; font-size: .9rem; color: var(--ink); flex-wrap: wrap; }
+.nt-rhead small { font-weight: 400; color: var(--muted); font-size: .76rem; }
+.nt-rhead .go { margin-left: auto; color: var(--accent); font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.nt-rhead .lines { display: inline-flex; gap: 3px; flex: none; }
+.nt-rhead .lines i { width: 12px; height: 4px; border-radius: 2px; background: var(--lc); }
+.mini-row { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.mini-row:first-child { border-top: 0; }
+.mini-row .res-times { font-size: 1.12rem; }
+.mini-row .res-dur { font-size: .78rem; }
+.linklike { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 0; font-size: .85rem; }
+
+.bus-wrap { overflow-x: auto; margin-top: 4px; }
+table.bus { border-collapse: collapse; width: 100%; font-size: .9rem; }
+table.bus th { font-size: .74rem; color: var(--muted); font-weight: 500; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--rule-2); white-space: nowrap; }
+@media (max-width: 480px) { table.bus th, table.bus td { padding-left: 6px !important; padding-right: 6px !important; } }
+table.bus td { padding: 7px 10px; border-bottom: 1px solid var(--rule); font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.bus td.cls { font-family: var(--f-body); font-size: .78rem; color: var(--ink-2); }
+table.bus td.sub2 { color: var(--ink-2); }
+table.bus tr.past td { color: var(--muted); }
+table.bus tr.next td { background: var(--accent-soft); font-weight: 600; }
+.bus-legend { display: flex; gap: 6px 14px; flex-wrap: wrap; font-size: .76rem; color: var(--muted); margin-top: 10px; }
+
+/* ---------- timer ---------- */
+.timer-panel { display: grid; gap: 14px; justify-items: center; text-align: center; padding-block: 22px; }
+.timer-panel label { display: grid; gap: 4px; font-size: .82rem; color: var(--ink-2); width: min(100%, 420px); text-align: left; }
+.timer-panel select { width: 100%; }
+.clock-wrap { position: relative; width: min(78vw, 300px); aspect-ratio: 1; max-width: 100%; }
+.clock-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.clock-wrap .ring-bg { stroke: var(--sunken); }
+.clock-wrap .ring { stroke: var(--accent); transition: stroke-dashoffset .25s linear; }
+.clock-wrap.brk .ring { stroke: var(--c0); }
+.clock-face { position: absolute; inset: 0; display: grid; place-content: center; gap: 4px; }
+.clock { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: clamp(2.6rem, 11vw, 3.6rem); font-weight: 600; letter-spacing: -.02em; line-height: 1; }
+.phase { font-size: .82rem; color: var(--ink-2); font-weight: 500; }
+.timer-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.timer-btns .btn { min-width: 112px; padding-block: 10px; }
+.pomo-set { display: flex; gap: 6px; align-items: center; font-size: .84rem; color: var(--ink-2); flex-wrap: wrap; justify-content: center; }
+.pomo-set input { width: 4.2em; text-align: center; }
+.sessions { list-style: none; margin: 0; padding: 0; }
+.sessions li { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--rule); font-size: .88rem; }
+.sessions li:first-child { border-top: 0; }
+.sessions .t { color: var(--muted); font-size: .82rem; }
+.sessions .what { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.sessions .m { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: .76rem; padding: 5px 8px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity .1s; }
+.chart .tip.on { opacity: 1; }
+.bars-list { display: grid; gap: 8px; }
+.bl-row { display: grid; grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: .84rem; }
+.bl-row .nm { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.bl-row .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bl-track { height: 8px; background: var(--sunken); border-radius: 4px; overflow: hidden; }
+.bl-track > span { display: block; height: 100%; background: var(--sc); border-radius: 4px; }
+.bl-row .v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+table.mini { border-collapse: collapse; width: 100%; font-size: .82rem; margin-top: 8px; }
+table.mini td, table.mini th { padding: 4px 6px; border-bottom: 1px solid var(--rule); text-align: left; }
+table.mini td:last-child, table.mini th:last-child { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.manual { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.manual > * { flex: 1 1 120px; }
+
+/* ---------- steps, data dialog, welcome ---------- */
+.item.has-steps { align-items: flex-start; }
+.item.has-steps > .chk { margin-top: 1px; }
+.i-acts { display: flex; gap: 6px; align-items: center; flex: none; }
+.item.has-steps .i-acts { margin-top: 1px; }
+@media (max-width: 520px) { .item { flex-wrap: wrap; } .item .i-main { flex: 1 1 calc(100% - 40px); } .item .i-acts { margin-left: 36px; } }
+.steps { list-style: none; margin: 6px 0 2px; padding: 4px 10px; background: var(--sunken); border-radius: 10px; display: grid; gap: 0; }
+.step { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; font-size: .86rem; line-height: 1.45; }
+.step + .step { border-top: 1px dashed var(--rule-2); }
+.step .s-body { min-width: 0; display: grid; gap: 1px; }
+.step .s-t { overflow-wrap: anywhere; }
+.step .s-meta { font-size: .74rem; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
+.step em { font-style: normal; }
+.step em.kind { color: var(--ink-2); background: var(--surface); border-radius: 4px; padding: 0 5px; }
+.step em.late { color: var(--hot); font-weight: 700; }
+.step em.when { color: var(--muted); }
+.step.done .s-t { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule-2); }
+.chk.sm { width: 20px; height: 20px; }
+.chk.sm .box { width: 18px; height: 18px; border-radius: 5px; }
+.chk.sm input:checked + .box::after { width: 8px; height: 5px; border-width: 2px; }
+.steps-toggle { border: 0; background: none; padding: 2px 0; margin-top: 2px; display: inline-flex; gap: 6px; align-items: baseline; color: var(--accent); font-size: .8rem; font-weight: 600; }
+.steps-toggle b { font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+.steps-toggle small { color: var(--muted); font-weight: 400; }
+.steps-toggle .chev { display: inline-block; transition: transform .15s; }
+.steps-toggle[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.note.ref { margin-top: 4px; }
+.unit { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 10px; row-gap: 4px; align-items: start; }
+.unit > .chk { margin-top: 1px; }
+.unit .u-more { grid-column: 2 / -1; grid-row: 2; min-width: 0; }
+.unit .unit-ctrls { grid-column: 3; grid-row: 1; margin-left: 0; justify-content: flex-end; }
+@media (max-width: 620px) {
+  .unit { grid-template-columns: auto minmax(0, 1fr); }
+  .unit .unit-ctrls { grid-column: 2; grid-row: 2; justify-content: flex-start; }
+  .unit .u-more { grid-row: 3; }
+}
+.next-plan { font-size: .76rem; color: var(--ink-2); font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.banner.welcome { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+.data-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.file-btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; cursor: pointer; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.import-box { border: 1px solid var(--rule-2); border-radius: var(--r-sm); padding: 12px; display: grid; gap: 8px; font-size: .88rem; }
+.modal-card .import-box label { display: flex; gap: 8px; align-items: center; color: var(--ink); font-size: .88rem; }
+.modal-card .import-box input[type="checkbox"], .modal-card .import-box input[type="radio"] { width: auto; flex: none; margin: 0; }
+.import-box .radios { display: flex; gap: 6px 16px; flex-wrap: wrap; padding-left: 24px; }
+.modal-card .import-box .radios label { color: var(--ink-2); font-size: .84rem; }
+.modal-card .file-btn { display: inline-flex; color: var(--on-accent); font-size: .9rem; }
+.import-box .btn { justify-self: start; }
+hr.sep { border: 0; border-top: 1px solid var(--rule); margin: 2px 0; width: 100%; }
+.danger-link { color: var(--danger); justify-self: start; }
+.chip.data-btn { cursor: pointer; background: var(--surface); border: 1px solid var(--rule-2); color: var(--ink); font-weight: 600; }
+
+/* ---------- modal & toast ---------- */
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,12,15,.45); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.modal-card { background: var(--surface); border-radius: var(--r); padding: 18px; width: min(440px, 100%); display: grid; gap: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.25); max-height: 100%; overflow: auto; }
+.modal-card label { display: grid; gap: 4px; font-size: .82rem; color: var(--ink-2); }
+.modal-card input, .modal-card select { width: 100%; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.modal-actions .left { margin-right: auto; }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(10px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: .88rem; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60; max-width: calc(100% - 32px); text-align: center; }
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (min-width: 860px) { .toast { bottom: 32px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>まなび時刻表</b><span class="date" id="hdr-date"></span></div>
+    <nav class="top-tabs tabs" aria-label="画面切り替え" id="top-tabs"></nav>
+    <div class="chips">
+      <button class="chip run" id="hdr-timer" hidden data-action="goto" data-view="timer"></button>
+      <button class="chip data-btn" data-action="open-data">データ</button>
+      <span class="chip" id="hdr-day"></span>
+      <span class="chip" id="hdr-sync"><i class="led"></i><span>読み込み中</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- 今日 -->
+  <section class="view" id="v-today" aria-label="今日">
+    <div class="banner welcome" id="welcome" hidden>
+      <span><b>はじめに</b>　自分の単元や時刻表のデータファイルを読み込むと使えます。まずは「お試しデータ」で動きを見ることもできます。</span>
+      <button class="btn primary" data-action="open-data">データを読み込む</button>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>今日やること</h2>
+          <span class="sub" id="today-count"></span>
+        </div>
+        <div class="stat-row" id="today-stats"></div>
+        <div class="progress" aria-hidden="true"><span id="today-bar" style="width:0%"></span></div>
+        <ul class="items" id="today-list"></ul>
+        <div id="today-carry"></div>
+        <form class="add-row" id="f-task" autocomplete="off">
+          <input id="task-input" type="text" placeholder="やることを追加（例: 課題プリントを提出）" aria-label="やることを追加">
+          <button class="btn primary" type="submit">追加</button>
+        </form>
+        <div class="add-row">
+          <select id="unit-pick" aria-label="単元から今日の予定に追加"></select>
+          <button class="btn" type="button" data-action="pick-unit">今日に追加</button>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 id="nt-title">次の電車</h2>
+            <div class="seg" id="nt-dir" role="group" aria-label="表示する経路の切り替え"></div>
+          </div>
+          <div class="nt-mode" id="nt-route"></div>
+          <div id="nt-list"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h2>今日の勉強時間</h2>
+            <button class="linklike" data-action="goto" data-view="timer">タイマー →</button>
+          </div>
+          <div class="stat-row" id="today-study"></div>
+          <div class="bars-list" id="today-subj"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 単元 -->
+  <section class="view" id="v-units" aria-label="単元チェック" hidden>
+    <div class="panel-head" style="margin:0">
+      <h2>単元チェック</h2>
+      <div class="seg" id="unit-filter" role="group" aria-label="表示する単元">
+        <button data-filter="all" aria-pressed="true">すべて</button>
+        <button data-filter="open" aria-pressed="false">未完了</button>
+        <button data-filter="done" aria-pressed="false">完了</button>
+      </div>
+    </div>
+    <div class="banner" id="sample-banner" hidden>
+      <span>「例」と付いた科目・単元・記録は使い方の見本です。自分の科目を入れたら消してください。</span>
+      <button class="btn" data-action="clear-samples">例をすべて削除</button>
+    </div>
+    <div class="panel" id="units-overview"></div>
+    <div class="stack" id="subjects"></div>
+    <div class="panel add-panel">
+      <h3>単元を追加</h3>
+      <form id="f-units" autocomplete="off">
+        <select id="units-subject" aria-label="追加先の科目"></select>
+        <textarea id="units-text" rows="3" placeholder="1行に1単元。教科書の目次をまとめて貼り付けできます"></textarea>
+        <div class="row">
+          <label class="sub" style="display:flex;align-items:center;gap:6px;flex:0 1 auto">目安 <input id="units-est" type="number" min="5" max="600" step="5" value="30" style="width:5em"> 分</label>
+          <button class="btn primary" type="submit" style="flex:0 0 auto">単元を追加</button>
+        </div>
+      </form>
+      <h3 style="margin-top:18px">科目を追加</h3>
+      <form id="f-subject" autocomplete="off">
+        <div class="row">
+          <input id="subject-name" type="text" placeholder="科目名（例: 微分積分）" aria-label="科目名">
+          <button class="btn primary" type="submit" style="flex:0 0 auto">科目を追加</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 電車 -->
+  <section class="view" id="v-train" aria-label="電車の経路" hidden>
+    <div class="panel" id="train-empty" hidden>
+      <h2>時刻表データがまだありません</h2>
+      <p class="sub">このアプリには時刻表が入っていません。自分の通学経路の時刻表をデータファイルにして読み込むと、乗り換えを含めた経路を計算して表示します。データファイルの作り方はリポジトリの README を見てください。</p>
+      <div class="data-row"><button class="btn primary" data-action="open-data">データを読み込む</button></div>
+    </div>
+    <div class="route-pick" id="route-pick"></div>
+    <div class="panel" id="q-panel" style="display:grid;gap:12px">
+      <div class="query">
+        <div class="seg" id="q-mode" role="group" aria-label="時刻の種類">
+          <button data-mode="dep" aria-pressed="true">出発</button>
+          <button data-mode="arr" aria-pressed="false">到着</button>
+        </div>
+        <input type="date" id="q-date" aria-label="日付">
+        <input type="time" id="q-time" aria-label="時刻">
+        <button class="btn" id="q-now" data-action="q-now">今すぐ</button>
+        <select id="q-day" aria-label="ダイヤ">
+          <option value="auto">ダイヤ自動</option>
+          <option value="wd">平日ダイヤ</option>
+          <option value="hd">土休日ダイヤ</option>
+        </select>
+      </div>
+      <div class="linemap" id="linemap"></div>
+    </div>
+    <div id="res-note"></div>
+    <ol class="results" id="results"></ol>
+    <div id="more-wrap" style="display:flex;gap:8px;justify-content:center"><button class="btn" data-action="more">さらに表示</button></div>
+    <div class="panel" id="bus-day" hidden></div>
+    <details class="panel" id="xfer-settings">
+      <summary>乗り換え時間の設定</summary>
+      <div class="settings-grid" id="xfer-grid"></div>
+      <p class="note" style="margin:10px 0 0">乗換時間は「到着してから次の列車が出るまでに必要な最短時間」です。時間帯の設定は、乗換駅に着く時刻が開始以上・終了未満のときに使います。変えた値はこの端末に保存されます。</p>
+    </details>
+    <p class="note" id="tt-source"></p>
+  </section>
+
+  <!-- タイマー -->
+  <section class="view" id="v-timer" aria-label="勉強タイマー" hidden>
+    <div class="two-col">
+      <div class="panel timer-panel">
+        <div class="seg" id="t-mode" role="group" aria-label="タイマーの種類">
+          <button data-tmode="up" aria-pressed="true">ストップウォッチ</button>
+          <button data-tmode="pomo" aria-pressed="false">ポモドーロ</button>
+        </div>
+        <label>勉強する内容<select id="t-target"></select></label>
+        <div class="clock-wrap" id="clock-wrap">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54" fill="none" stroke-width="6"/><circle class="ring" id="ring" cx="60" cy="60" r="54" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="339.29"/></svg>
+          <div class="clock-face"><div class="clock" id="clock" role="timer" aria-live="off">00:00</div><div class="phase" id="phase">準備OK</div></div>
+        </div>
+        <div class="timer-btns" id="t-btns"></div>
+        <div class="pomo-set" id="pomo-set">集中 <input type="number" id="pomo-work" min="5" max="120"> 分 ／ 休憩 <input type="number" id="pomo-break" min="1" max="60"> 分</div>
+        <p class="note" style="margin:0">終了すると、選んだ単元と今日の勉強時間に記録されます（1分未満は記録しません）。</p>
+      </div>
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-head"><h2>今日の記録</h2><span class="sub" id="t-today-total"></span></div>
+          <ul class="sessions" id="session-list"></ul>
+          <details style="margin-top:10px">
+            <summary class="sub">手入力で記録する</summary>
+            <form class="manual" id="f-manual" autocomplete="off">
+              <select id="m-target" aria-label="勉強した内容"></select>
+              <input type="number" id="m-min" min="1" max="600" placeholder="分" aria-label="勉強した分数">
+              <input type="date" id="m-date" aria-label="日付">
+              <button class="btn primary" type="submit" style="flex:0 0 auto">記録</button>
+            </form>
+          </details>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>この7日間</h2><span class="sub" id="week-total"></span></div>
+          <div class="chart" id="week-chart"></div>
+          <details style="margin-top:8px"><summary class="sub">表で見る</summary><div id="week-table"></div></details>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="画面切り替え"><div class="tabs" id="bottom-tabs"></div></nav>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h3 id="modal-title"></h3>
+    <div id="modal-body" style="display:grid;gap:12px"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!--DATA_PACK-->
+<script>
+(() => {
+'use strict';
+
+/* ================= helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseYmd = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const WD = '日月火水木金土';
+const hm = m => `${pad(Math.floor(m / 60) % 24)}:${pad(((m % 60) + 60) % 60)}`;
+const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+const fmtMin = m => { m = Math.round(m); if (m < 60) return m + '分'; const h = Math.floor(m / 60), r = m % 60; return h + '時間' + (r ? r + '分' : ''); };
+const clockStr = ms => { const t = Math.max(0, Math.round(ms / 1000)); const h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60; return (h ? h + ':' + pad(m) : pad(m)) + ':' + pad(s); };
+const todayStr = () => ymd(new Date());
+const slot = n => `var(--c${Math.max(0, Math.min(7, n | 0))})`;
+const ICON = {
+  today: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8.5 14.5l2.2 2.2 4.8-4.7"/></svg>',
+  units: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l1.6 1.6L8.5 5M4 12.5l1.6 1.6 2.9-3.1M4 18.5l1.6 1.6 2.9-3.1M11.5 7h8.5M11.5 13h8.5M11.5 19h8.5"/></svg>',
+  train: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="14" rx="3.5"/><path d="M5 10.5h14M9 14h.01M15 14h.01M8.5 17l-2.5 4M15.5 17l2.5 4"/></svg>',
+  timer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5M19 6l1.5-1.5"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4zM13.5 6.5l4 4"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
+};
+
+/* ================= holidays & day type ================= */
+const HOLIDAYS = new Set(['2026-01-01','2026-01-12','2026-02-11','2026-02-23','2026-03-20','2026-04-29','2026-05-03','2026-05-04','2026-05-05','2026-05-06','2026-07-20','2026-08-11','2026-09-21','2026-09-22','2026-09-23','2026-10-12','2026-11-03','2026-11-23',
+  '2027-01-01','2027-01-11','2027-02-11','2027-02-23','2027-03-21','2027-03-22','2027-04-29','2027-05-03','2027-05-04','2027-05-05','2027-07-19','2027-08-11','2027-09-20','2027-09-23','2027-10-11','2027-11-03','2027-11-23']);
+let extraHolidays = new Set();
+function dayTypeFor(d) {
+  const iso = ymd(d), w = d.getDay(), md = iso.slice(5);
+  if (w === 0 || w === 6 || HOLIDAYS.has(iso) || extraHolidays.has(iso)) return 'hd';
+  if (md >= '12-30' || md <= '01-03') return 'hd';
+  return 'wd';
+}
+const DAY_LABEL = { wd: '平日ダイヤ', hd: '土休日ダイヤ' };
+/* service day: 0:00–2:59 belongs to the previous day's timetable */
+function serviceNow(now = new Date()) {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let m = now.getHours() * 60 + now.getMinutes();
+  if (now.getHours() < 3) { d.setDate(d.getDate() - 1); m += 1440; }
+  return { date: d, min: m };
+}
+
+/* ================= data file (each person loads their own) ================= */
+// The app ships with no timetable or study data. A data file (format "manabi-data") holds
+// transit: train routes + timetables, bus: shuttle bus timetable + calendar, units: subjects/units.
+const PACK_KEY = 'manabi-pack-v1';
+const hmToMin = s => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };
+const okColor = s => /^#[0-9a-f]{3,8}$/i.test(String(s || '')) ? s : null;
+const safeId = s => String(s || '').replace(/[^A-Za-z0-9_-]/g, '');
+function readEmbeddedPack() { const el = $('#data-pack'); if (!el) return null; try { return JSON.parse(el.textContent); } catch (e) { return null; } }
+function loadPack() {
+  try { const raw = localStorage.getItem(PACK_KEY); if (raw) return JSON.parse(raw) || {}; } catch (e) { /* storage unavailable */ }
+  return readEmbeddedPack() || {};
+}
+let PACK = loadPack();
+function savePack() { try { localStorage.setItem(PACK_KEY, JSON.stringify(PACK)); return true; } catch (e) { return false; } }
+
+/* ---- train engine ---- */
+let ROUTES = {}, GROUPS = [], AUTO = null, BUS = null;
+const legCache = {}, comboCache = {};
+function clearComboCache() { for (const k in comboCache) delete comboCache[k]; }
+function legRows(key, day) {
+  const k = key + ':' + day;
+  if (legCache[k]) return legCache[k];
+  const t = PACK.transit || {}, strs = t.strings || [], a = ((t.legs || {})[key] || {})[day] || [], out = [];
+  for (let i = 0; i + 4 < a.length; i += 5) out.push({ dep: a[i], arr: a[i + 1], type: strs[a[i + 2]] || '', dest: strs[a[i + 3]] || '', first: a[i + 4] === 1 });
+  out.sort((p, q2) => p.dep - q2.dep || p.arr - q2.arr);
+  return (legCache[k] = out);
+}
+function lineName(id) { const l = ((PACK.transit || {}).lines || {})[id]; return (l && l.name) || id || ''; }
+const lineVar = id => `var(--ln-${safeId(id)}, var(--muted))`;
+function applyLineColors() {
+  const lines = (PACK.transit || {}).lines || {};
+  let light = '', dark = '';
+  for (const [id, l] of Object.entries(lines)) {
+    const c = okColor(l && l.color) || '#888888';
+    light += `--ln-${safeId(id)}:${c};`; dark += `--ln-${safeId(id)}:${okColor(l && l.dark) || c};`;
+  }
+  const bc = okColor((PACK.bus || {}).color), bd = okColor((PACK.bus || {}).dark) || bc;
+  if (bc) { light += `--bus:${bc};`; dark += `--bus:${bd};`; }
+  let el = $('#line-colors');
+  if (!el) { el = document.createElement('style'); el.id = 'line-colors'; document.head.appendChild(el); }
+  el.textContent = `:root{${light}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${dark}}}:root[data-theme="dark"]{${dark}}`;
+}
+function transferDef(id) {
+  const base = ((PACK.transit || {}).transfers || {})[id] || { label: '乗換', min: 0 };
+  const o = (state.settings.xfer || {})[id] || {};
+  const win = (o.windows || base.windows || []).map((w, k) => ({ from: hmToMin(w.from), to: hmToMin(w.to), min: +w.min || 0, label: ((base.windows || [])[k] || {}).label || '' })).filter(w => w.from != null && w.to != null);
+  return { label: base.label || '乗換', walk: !!base.walk, min: o.min != null ? +o.min : (+base.min || 0), windows: win, baseWindows: base.windows || [] };
+}
+function transferFor(route, i, arr) {
+  const tp = transferDef((route.transfers || [])[i]);
+  const m = ((arr % 1440) + 1440) % 1440;
+  for (const w of tp.windows) if (m >= w.from && m < w.to) return { min: w.min, rush: true, rushLabel: w.label || '時間帯の設定', walk: tp.walk, label: tp.label };
+  return { min: tp.min, rush: false, walk: tp.walk, label: tp.label };
+}
+function lowerBound(rows, v) { let lo = 0, hi = rows.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (rows[mid].dep < v) lo = mid + 1; else hi = mid; } return lo; }
+function allCombos(rk, day) {
+  const s = state.settings;
+  const key = [rk, day, JSON.stringify(s.xfer || {})].join('|');
+  if (comboCache[key]) return comboCache[key];
+  const r = ROUTES[rk];
+  if (!r || r.kind !== 'train') return [];
+  const L = r.legs.map(l => legRows(l.leg, day));
+  const raw = [];
+  for (const a of L[0]) {
+    const chain = [a], xs = [];
+    let cur = a, ok = true;
+    for (let i = 1; i < L.length; i++) {
+      const x = transferFor(r, i - 1, cur.arr), ready = cur.arr + x.min;
+      let best = null;
+      for (let j = lowerBound(L[i], ready); j < L[i].length; j++) {
+        const b = L[i][j];
+        if (best && b.dep >= best.arr) break;
+        if (!best || b.arr < best.arr) best = b;
+      }
+      if (!best) { ok = false; break; }
+      xs.push(x); chain.push(best); cur = best;
+    }
+    if (ok) raw.push({ legs: chain, xs, dep: a.dep, arr: cur.arr });
+  }
+  // one connection per final train: keep the latest first train
+  const byLast = new Map();
+  for (const c of raw) { const k2 = c.legs[c.legs.length - 1]; const p = byLast.get(k2); if (!p || c.dep > p.dep) byLast.set(k2, c); }
+  let list = [...byLast.values()].sort((p, q2) => p.dep - q2.dep || p.arr - q2.arr);
+  list = list.filter(c => !list.some(d => d !== c && d.dep >= c.dep && d.arr <= c.arr && (d.dep > c.dep || d.arr < c.arr)));
+  return (comboCache[key] = list);
+}
+function searchRoutes(rk, date, tmin, mode, count, dayOverride) {
+  const day = dayOverride && dayOverride !== 'auto' ? dayOverride : dayTypeFor(date);
+  const list = allCombos(rk, day);
+  if (mode === 'arr') { const f = list.filter(c => c.arr <= tmin); return { day, res: f.slice(-count), nextDay: false }; }
+  const i = list.findIndex(c => c.dep >= tmin);
+  if (i >= 0) return { day, res: list.slice(i, i + count), nextDay: false };
+  const nd = addDays(date, 1), day2 = dayOverride && dayOverride !== 'auto' ? dayOverride : dayTypeFor(nd);
+  return { day: day2, res: allCombos(rk, day2).slice(0, count), nextDay: true, date: nd };
+}
+
+/* ---- bus engine ---- */
+function buildBus(b) {
+  if (!b || !Array.isArray(b.routes) || !b.routes.length) return null;
+  const toMin = t => +t.slice(0, 2) * 60 + +t.slice(3, 5);
+  const days = new Map();
+  for (const t in (b.calendar || {})) for (const part of String(b.calendar[t]).split('|')) {
+    const [ym, ds] = part.split(':'); if (!ym || !ds) continue;
+    for (const d of ds.split(',')) if (d.trim()) days.set(ym + '-' + pad(+d), t);
+  }
+  const classes = b.classes || {};
+  const routes = {};
+  for (const r of b.routes) {
+    if (!r || !r.id) continue;
+    const trips = String(r.trips || '').split(/\s+/).filter(x => /^\d\d:\d\d-\d\d:\d\d\w$/.test(x)).map(x => ({ dep: toMin(x.slice(0, 5)), arr: toMin(x.slice(6, 11)), c: x[11] }));
+    routes[r.id] = { ...r, trips };
+  }
+  // weekdays: {"type": [1,2,3,4,5]} gives a day type by weekday (0=Sun) on dates the calendar does not list (holidays excluded)
+  const weekdays = b.weekdays && typeof b.weekdays === 'object' ? b.weekdays : null;
+  return { label: b.label || 'バス', classes, days, weekdays, dayTypes: b.dayTypes || {}, range: b.range || null, refType: b.refType || null, legend: b.legend || [], source: b.source || '', routes };
+}
+function busDayType(d) {
+  if (!BUS) return null;
+  const iso = ymd(d);
+  if (BUS.range && (iso < BUS.range[0] || iso > BUS.range[1])) return null;
+  if (BUS.days.has(iso)) return BUS.days.get(iso);
+  if (BUS.weekdays && !HOLIDAYS.has(iso) && !extraHolidays.has(iso)) {
+    for (const [t, list] of Object.entries(BUS.weekdays)) if (Array.isArray(list) && list.includes(d.getDay())) return t;
+  }
+  return '0';
+}
+function busRuns(c, t) { const k = BUS.classes[c]; return !!(k && Array.isArray(k.runs) && k.runs.includes(t)); }
+function busTrips(rid, d) { const t = busDayType(d); const r = BUS.routes[rid]; return { type: t, trips: r && t && t !== '0' ? r.trips.filter(x => busRuns(x.c, t)) : [] }; }
+function busSearch(rid, date, tmin, mode, count) {
+  const { type, trips } = busTrips(rid, date);
+  if (type === null) return { date, type, trips: BUS.refType ? BUS.routes[rid].trips.filter(x => busRuns(x.c, BUS.refType)) : [], res: [], outOfRange: true };
+  if (mode === 'arr') { const f = trips.filter(x => x.arr <= tmin); return { date, type, trips, res: f.slice(-count) }; }
+  const i = trips.findIndex(x => x.dep >= tmin);
+  if (i >= 0) return { date, type, trips, res: trips.slice(i, i + count) };
+  for (let k = 1; k <= 45; k++) {
+    const d = addDays(date, k), bt = busTrips(rid, d);
+    if (bt.type === null) break;
+    if (bt.trips.length) return { date: d, type: bt.type, trips: bt.trips, res: bt.trips.slice(0, count), nextDay: true, fromType: type };
+  }
+  return { date, type, trips, res: [], none: true };
+}
+const busClsLabel = (c, short) => { const k = BUS && BUS.classes[c]; return k ? (short && k.short) || k.label || c : c; };
+
+/* ---- rebuild everything derived from the data file ---- */
+function rebuildData() {
+  for (const k in legCache) delete legCache[k];
+  clearComboCache();
+  ROUTES = {}; GROUPS = []; AUTO = null;
+  const t = PACK.transit;
+  const trainIds = [];
+  if (t && Array.isArray(t.routes)) {
+    for (const r of t.routes) {
+      if (!r || !r.id || !Array.isArray(r.legs) || !r.legs.length) continue;
+      ROUTES[r.id] = { ...r, kind: 'train', transfers: r.transfers || [] };
+      trainIds.push(r.id);
+    }
+    for (const g of (t.groups || [])) {
+      const ids = (g.routes || []).filter(id => ROUTES[id]);
+      if (ids.length) GROUPS.push({ id: g.id || ids[0], label: g.label || '', routes: ids });
+    }
+    if (!GROUPS.length && trainIds.length) GROUPS.push({ id: 'all', label: '電車', routes: trainIds });
+    const a = t.autoSwitch;
+    if (a && GROUPS.some(g => g.id === a.before) && GROUPS.some(g => g.id === a.after) && hmToMin(a.at) != null) AUTO = { before: a.before, after: a.after, at: hmToMin(a.at) };
+  }
+  BUS = buildBus(PACK.bus);
+  if (BUS) {
+    const ids = [];
+    for (const r of Object.values(BUS.routes)) { ROUTES[r.id] = { ...r, kind: 'bus' }; ids.push(r.id); }
+    GROUPS.push({ id: '__bus', label: BUS.label, routes: ids, bus: true });
+  }
+  extraHolidays = new Set(((t || {}).holidays || []).filter(x => /^\d{4}-\d\d-\d\d$/.test(x)));
+  applyLineColors();
+}
+const firstRouteId = () => (GROUPS[0] && GROUPS[0].routes[0]) || '';
+const hasTransit = () => GROUPS.some(g => !g.bus);
+
+/* ================= state ================= */
+const LS_KEY = 'manabi-jikokuhyo-v1';
+const DEFAULT_SETTINGS = { xfer: {}, route: '', pomoWork: 25, pomoBreak: 5 };
+function emptyState() { return { v: 1, subjects: [], units: [], tasks: [], sessions: [], archive: {}, timer: null, settings: { ...DEFAULT_SETTINGS }, updatedAt: 0 }; }
+function normalize(s) {
+  const e = emptyState();
+  if (!s || typeof s !== 'object') return e;
+  const out = { ...e, ...s };
+  out.subjects = Array.isArray(s.subjects) ? s.subjects.filter(x => x && x.id) : [];
+  out.units = Array.isArray(s.units) ? s.units.filter(x => x && x.id) : [];
+  out.tasks = Array.isArray(s.tasks) ? s.tasks.filter(x => x && x.id) : [];
+  out.sessions = Array.isArray(s.sessions) ? s.sessions.filter(x => x && x.id) : [];
+  out.archive = s.archive && typeof s.archive === 'object' ? { ...s.archive } : {};
+  out.settings = { ...DEFAULT_SETTINGS, ...(s.settings || {}) };
+  if (!out.settings.xfer || typeof out.settings.xfer !== 'object') out.settings.xfer = {};
+  out.timer = s.timer && typeof s.timer === 'object' ? { ...s.timer } : null;
+  out.updatedAt = +s.updatedAt || 0;
+  return out;
+}
+function loadLocal() { try { const raw = localStorage.getItem(LS_KEY); return raw ? normalize(JSON.parse(raw)) : null; } catch (e) { return null; } }
+function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ } }
+let state = loadLocal() || emptyState();
+
+function commit(opts = {}) {
+  state.updatedAt = Date.now();
+  prune();
+  saveLocal();
+  scheduleRemote();
+  if (opts.settings) clearComboCache();
+  render();
+}
+function prune() {
+  const MAX = 1500;
+  if (state.sessions.length <= MAX) return;
+  state.sessions.sort((a, b) => a.s - b.s);
+  const old = state.sessions.splice(0, state.sessions.length - MAX);
+  for (const x of old) {
+    state.archive[x.d] = Math.round(((state.archive[x.d] || 0) + x.m) * 10) / 10;
+    const u = x.u && state.units.find(u => u.id === x.u);
+    if (u) u.archMin = Math.round(((u.archMin || 0) + x.m) * 10) / 10;
+  }
+}
+
+/* ================= cloud sync (db capability) ================= */
+let docRef = null, syncMode = 'connecting', gotFirst = false, writing = false, dirty = false, writeTimer = null;
+function setSync(mode) {
+  syncMode = mode;
+  const el = $('#hdr-sync');
+  const map = {
+    connecting: ['', '読み込み中'],
+    cloud: ['ok', 'クラウド保存'],
+    local: ['', 'この端末に保存'],
+    readonly: ['warn', 'この端末のみ（閲覧者）'],
+    offline: ['warn', '接続待ち（端末に保存中）']
+  };
+  const [cls, label] = map[mode] || map.local;
+  el.className = 'chip ' + cls;
+  el.innerHTML = '<i class="led"></i><span>' + esc(label) + '</span>';
+  el.title = mode === 'cloud' ? '進捗はこのページの持ち主のアカウントに保存され、ほかの端末でも同じ内容が表示されます' : mode === 'readonly' ? 'このページの持ち主だけがクラウドに保存できます。変更はこの端末のブラウザに保存されます' : '変更はこの端末のブラウザに保存されます';
+}
+function scheduleRemote() {
+  if (!docRef || syncMode === 'readonly') return;
+  dirty = true;
+  clearTimeout(writeTimer);
+  writeTimer = setTimeout(flush, 700);
+}
+async function flush() {
+  if (!docRef || writing || !dirty) return;
+  writing = true; dirty = false;
+  try {
+    await docRef.set(JSON.parse(JSON.stringify(state)));
+    if (syncMode !== 'cloud') setSync('cloud');
+  } catch (e) {
+    const code = e && e.code;
+    if (code === 'invalid_argument' || code === 'not_granted') setSync('readonly');
+    else if (code === 'quota_exceeded') toast('保存容量の上限に達しました。古い記録を減らしてください');
+    else if (code === 'unavailable' || code === 'resource_exhausted') { dirty = true; }
+    else setSync('local');
+  } finally {
+    writing = false;
+    if (dirty && syncMode !== 'readonly') { clearTimeout(writeTimer); writeTimer = setTimeout(flush, 1500 + Math.random() * 1000); }
+  }
+}
+async function initCloud() {
+  if (!window.claude || typeof window.claude.use !== 'function') { setSync('local'); return; }
+  let db = null;
+  try { db = await window.claude.use('db'); } catch (e) { db = null; }
+  if (!db) { setSync('local'); return; }
+  try { docRef = db.doc('app/state'); } catch (e) { setSync('local'); return; }
+  const timer = setTimeout(() => { if (!gotFirst) setSync('offline'); }, 10000);
+  docRef.onSnapshot(snap => {
+    if (snap.metadata.hasPendingWrites) return;
+    if (!snap.metadata.fromCache) { gotFirst = true; clearTimeout(timer); }
+    if (snap.exists) {
+      const remote = normalize(snap.data());
+      if (remote.updatedAt > state.updatedAt) { state = remote; saveLocal(); clearComboCache(); render(); }
+      else if (remote.updatedAt < state.updatedAt && !snap.metadata.fromCache) scheduleRemote();
+    } else if (!snap.metadata.fromCache && state.updatedAt > 0) {
+      scheduleRemote();
+    }
+    if (gotFirst && syncMode !== 'readonly') setSync('cloud');
+  }, err => {
+    clearTimeout(timer);
+    setSync(err && err.code === 'revoked' ? 'local' : 'offline');
+  });
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && dirty) flush(); });
+
+/* ================= derived data ================= */
+const subjOf = id => state.subjects.find(s => s.id === id);
+const unitOf = id => state.units.find(u => u.id === id);
+const taskOf = id => state.tasks.find(t => t.id === id);
+function minutesOn(date) {
+  let m = state.archive[date] || 0;
+  for (const s of state.sessions) if (s.d === date) m += s.m;
+  return m;
+}
+function unitMinutes(id) {
+  const u = unitOf(id);
+  let m = (u && u.archMin) || 0;
+  for (const s of state.sessions) if (s.u === id) m += s.m;
+  return m;
+}
+function liveWorkMs() {
+  const t = state.timer;
+  if (!t || (t.mode === 'pomo' && t.phase === 'break')) return 0;
+  return timerElapsed();
+}
+function targetLabel(u, j) {
+  const unit = u && unitOf(u), subj = subjOf(j || (unit && unit.subjectId));
+  if (unit) return (subj ? subj.name + '｜' : '') + unit.name;
+  if (subj) return subj.name + '（科目全般）';
+  return '指定なし';
+}
+const hasSamples = () => state.subjects.some(s => s.sample) || state.units.some(u => u.sample) || state.tasks.some(t => t.sample) || state.sessions.some(s => s.x);
+
+/* ================= navigation ================= */
+const VIEWS = [
+  { id: 'today', label: '今日', icon: 'today' },
+  { id: 'units', label: '単元', icon: 'units' },
+  { id: 'train', label: '電車', icon: 'train' },
+  { id: 'timer', label: 'タイマー', icon: 'timer' }
+];
+let view = 'today';
+function buildTabs() {
+  const html = VIEWS.map(v => `<button class="tab" data-action="goto" data-view="${v.id}">${ICON[v.icon]}<span>${v.label}</span></button>`).join('');
+  $('#top-tabs').innerHTML = html;
+  $('#bottom-tabs').innerHTML = html;
+}
+function showView(id, push = true) {
+  if (!VIEWS.some(v => v.id === id)) id = 'today';
+  view = id;
+  for (const v of VIEWS) $('#v-' + v.id).hidden = v.id !== id;
+  $$('.tab').forEach(b => b.setAttribute('aria-current', b.dataset.view === id ? 'page' : 'false'));
+  if (push && location.hash !== '#' + id) { try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; } }
+  render();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', () => showView(location.hash.slice(1), false));
+
+/* ================= toast & modal ================= */
+let toastTimer = null;
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('on'), 2600); }
+let modalHandler = null;
+function openModal(title, bodyHtml, actions, onAction) {
+  $('#modal-title').textContent = title;
+  $('#modal-body').innerHTML = bodyHtml;
+  $('#modal-actions').innerHTML = actions.map(a => `<button class="btn ${a.cls || ''}" data-modal="${a.id}">${esc(a.label)}</button>`).join('');
+  modalHandler = onAction;
+  $('#modal').hidden = false;
+  const f = $('#modal-body input, #modal-body select');
+  if (f) setTimeout(() => f.focus(), 30);
+}
+function closeModal() { $('#modal').hidden = true; modalHandler = null; }
+$('#modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') { closeModal(); return; }
+  const b = e.target.closest('[data-modal]');
+  if (b && modalHandler) { const r = modalHandler(b.dataset.modal); if (r !== false) closeModal(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal').hidden) closeModal(); });
+
+/* ================= render: header ================= */
+function renderHeader() {
+  const now = new Date();
+  $('#hdr-date').textContent = `${now.getMonth() + 1}月${now.getDate()}日(${WD[now.getDay()]})`;
+  const sd = serviceNow(now), day = dayTypeFor(sd.date);
+  const chip = $('#hdr-day');
+  chip.textContent = DAY_LABEL[day];
+  chip.className = 'chip' + (day === 'hd' ? ' day-hd' : '');
+  renderTimerChip();
+}
+function renderTimerChip() {
+  const t = state.timer, el = $('#hdr-timer');
+  const active = t && (t.running || timerElapsed() > 0);
+  el.hidden = !active || view === 'timer';
+  if (!el.hidden) {
+    const brk = t.mode === 'pomo' && t.phase === 'break';
+    const ms = t.mode === 'pomo' ? Math.max(0, phaseTarget(t) - timerElapsed()) : timerElapsed();
+    el.textContent = (t.running ? (brk ? '休憩 ' : '勉強中 ') : '一時停止 ') + clockStr(ms);
+  }
+}
+
+/* ================= units with steps (やること) ================= */
+const stepsOf = u => (Array.isArray(u.steps) ? u.steps : []);
+const isNorma = s => (s.kind || 'n') === 'n';
+const mdOf = s => String(s || '').slice(5).replace('-', '/').replace(/^0/, '').replace('/0', '/');
+function stepView(u, today) {
+  const todayIdx = [], lateIdx = [];
+  stepsOf(u).forEach((s, i) => {
+    if (!isNorma(s) || !s.plan) return;
+    if (s.plan === today) todayIdx.push(i);
+    else if (s.plan < today && !s.done) lateIdx.push(i);
+  });
+  return { todayIdx, lateIdx };
+}
+function nextPlan(u) { return stepsOf(u).filter(s => isNorma(s) && !s.done && s.plan).map(s => s.plan).sort()[0] || null; }
+function setStepDone(u, i, done) {
+  const s = stepsOf(u)[i];
+  if (!s) return;
+  s.done = done ? todayStr() : null;
+  if (done) {
+    const norma = stepsOf(u).filter(isNorma);
+    if (norma.length && norma.every(x => x.done)) setUnitDone(u, true);
+    else if (u.status === 'todo') u.status = 'doing';
+  } else if (isNorma(s) && u.status === 'done') { u.status = 'doing'; u.doneAt = null; }
+}
+function stepLi(u, i, opts = {}) {
+  const s = stepsOf(u)[i];
+  const meta = [s.b ? esc(s.b) : '', !isNorma(s) ? '<em class="kind">応用</em>' : '', opts.late ? `<em class="late">予定 ${esc(mdOf(s.plan))}</em>` : '',
+    opts.showPlan && !s.done && s.plan && isNorma(s) ? `<em class="when">予定 ${esc(mdOf(s.plan))}</em>` : '', s.done && /^\d{4}-/.test(s.done) && opts.showDone ? `<em class="when">${esc(mdOf(s.done))} 済</em>` : ''].filter(Boolean).join(' ');
+  return `<li class="step ${s.done ? 'done' : ''}">
+    <label class="chk sm"><input type="checkbox" data-action="toggle-step" data-id="${esc(u.id)}" data-i="${i}" ${s.done ? 'checked' : ''} aria-label="${esc(s.t)} を済みにする"><span class="box"></span></label>
+    <span class="s-body"><span class="s-t">${esc(s.t)}</span>${meta ? `<span class="s-meta">${meta}</span>` : ''}</span>
+  </li>`;
+}
+
+/* ================= render: today ================= */
+function renderToday() {
+  const today = todayStr();
+  const items = [], carry = [];
+  for (const u of state.units) {
+    const st = stepsOf(u), { todayIdx, lateIdx } = stepView(u, today);
+    if (todayIdx.length || u.plan === today) {
+      let show = todayIdx.length ? [...todayIdx, ...lateIdx] : st.map((s, i) => i).filter(i => isNorma(st[i]) && (!st[i].done || st[i].done === today));
+      show = [...new Set(show)].sort((a, b) => a - b);
+      const done = u.status === 'done' || (show.length > 0 && show.every(i => st[i].done));
+      items.push({ kind: 'unit', o: u, done, steps: show, late: new Set(lateIdx) });
+    } else if (u.status !== 'done' && (lateIdx.length || (u.plan && u.plan < today))) {
+      carry.push({ kind: 'unit', o: u, done: false, steps: lateIdx, late: new Set(lateIdx), since: lateIdx.length ? st[lateIdx[0]].plan : u.plan });
+    }
+  }
+  for (const t of state.tasks) {
+    if (t.date === today) items.push({ kind: 'task', o: t, done: !!t.done });
+    else if (t.date && t.date < today && !t.done) carry.push({ kind: 'task', o: t, done: false, since: t.date });
+  }
+  items.sort((a, b) => (a.done - b.done) || ((a.o.order || 0) - (b.o.order || 0)));
+  carry.sort((a, b) => String(a.since).localeCompare(String(b.since)));
+
+  const doneN = items.filter(i => i.done).length;
+  $('#today-count').textContent = items.length ? `${doneN} / ${items.length} 完了` : '';
+  $('#today-bar').style.width = items.length ? Math.round(doneN / items.length * 100) + '%' : '0%';
+  let stepTotal = 0, stepDone = 0;
+  for (const it of items) if (it.steps) for (const i of it.steps) { stepTotal++; if (stepsOf(it.o)[i].done) stepDone++; }
+  const planned = items.filter(i => i.kind === 'unit').reduce((s, i) => s + (+i.o.est || 0), 0);
+  const studied = minutesOn(today) + liveWorkMs() / 60000;
+  $('#today-stats').innerHTML = `
+    <div class="stat"><b>${doneN}<span style="font-size:.9rem;color:var(--muted)"> / ${items.length}</span></b><span>完了</span></div>
+    ${stepTotal ? `<div class="stat"><b>${stepDone}<span style="font-size:.9rem;color:var(--muted)"> / ${stepTotal}</span></b><span>やること</span></div>` : `<div class="stat"><b>${fmtMin(planned)}</b><span>予定（目安の合計）</span></div>`}
+    <div class="stat"><b id="today-studied">${fmtMin(studied)}</b><span>勉強した時間</span></div>`;
+
+  const runningU = state.timer && state.timer.running && state.timer.target && state.timer.target.startsWith('u:') ? state.timer.target.slice(2) : null;
+  const row = (it, isCarry) => {
+    if (it.kind === 'unit') {
+      const u = it.o, s = subjOf(u.subjectId), mins = unitMinutes(u.id);
+      const meta = [s ? `<span class="dot" style="--sc:${slot(s.color)}"></span>${esc(s.name)}` : '', u.week ? esc(u.week) : '', u.est ? `目安${u.est}分` : '', mins >= 1 ? `記録${fmtMin(mins)}` : '', isCarry && it.since ? `予定 ${esc(mdOf(it.since))}` : ''].filter(Boolean).join(' · ');
+      const steps = it.steps && it.steps.length ? `<ul class="steps">${it.steps.map(i => stepLi(u, i, { late: it.late.has(i) })).join('')}</ul>` : '';
+      return `<li class="item ${it.done ? 'done' : ''} ${steps ? 'has-steps' : ''}">
+        <label class="chk"><input type="checkbox" data-action="toggle-unit" data-id="${esc(u.id)}" ${u.status === 'done' ? 'checked' : ''} aria-label="${esc(u.name)} を完了にする"><span class="box"></span></label>
+        <div class="i-main"><div class="i-title">${esc(u.name)}${u.sample ? '<span class="badge ex">例</span>' : ''}</div><div class="i-meta">${meta}</div>${steps}</div>
+        <div class="i-acts">
+        ${isCarry ? `<button class="today-btn" data-action="move-today" data-kind="unit" data-id="${esc(u.id)}">今日へ</button>` : ''}
+        ${u.status === 'done' ? '' : `<button class="play ${runningU === u.id ? 'on' : ''}" data-action="start-unit" data-id="${esc(u.id)}" aria-label="${esc(u.name)} のタイマーを開始">${ICON.play}${runningU === u.id ? '計測中' : '開始'}</button>`}
+        </div>
+      </li>`;
+    }
+    const t = it.o;
+    return `<li class="item ${it.done ? 'done' : ''}">
+      <label class="chk"><input type="checkbox" data-action="toggle-task" data-id="${esc(t.id)}" ${it.done ? 'checked' : ''} aria-label="${esc(t.text)} を完了にする"><span class="box"></span></label>
+      <div class="i-main"><div class="i-title">${esc(t.text)}${t.sample ? '<span class="badge ex">例</span>' : ''}</div><div class="i-meta">やること${isCarry ? ` · 予定 ${esc(mdOf(t.date))}` : ''}</div></div>
+      <div class="i-acts">
+      ${isCarry ? `<button class="today-btn" data-action="move-today" data-kind="task" data-id="${esc(t.id)}">今日へ</button>` : ''}
+      <button class="icon-btn" data-action="delete-task" data-id="${esc(t.id)}" aria-label="${esc(t.text)} を削除">${ICON.x}</button>
+      </div>
+    </li>`;
+  };
+  $('#today-list').innerHTML = items.length ? items.map(i => row(i, false)).join('')
+    : `<li class="empty">今日の予定はまだありません。下の欄から追加するか、「単元」画面で単元の「今日」を押すとここに並びます。</li>`;
+  $('#today-carry').innerHTML = carry.length ? `<div class="carry"><h3>持ち越し（予定日を過ぎた未完了 ${carry.length}件）</h3><ul class="items">${carry.map(i => row(i, true)).join('')}</ul></div>` : '';
+
+  const sel = $('#unit-pick'), prev = sel.value;
+  let opts = '<option value="">単元から今日の予定に追加…</option>';
+  for (const s of state.subjects) {
+    const us = state.units.filter(u => u.subjectId === s.id && u.status !== 'done' && u.plan !== today);
+    if (us.length) opts += `<optgroup label="${esc(s.name)}">` + us.map(u => `<option value="${esc(u.id)}">${esc(u.name)}</option>`).join('') + '</optgroup>';
+  }
+  sel.innerHTML = opts;
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+
+  $('#welcome').hidden = !!(state.units.length || state.tasks.length || Object.keys(ROUTES).length);
+  renderNextTrain();
+  renderTodayStudy();
+}
+function renderTodayStudy() {
+  const today = todayStr();
+  const total = minutesOn(today) + liveWorkMs() / 60000;
+  const week = Array.from({ length: 7 }, (_, i) => minutesOn(ymd(addDays(new Date(), -i)))).reduce((a, b) => a + b, 0) + liveWorkMs() / 60000;
+  $('#today-study').innerHTML = `<div class="stat"><b>${fmtMin(total)}</b><span>今日</span></div><div class="stat"><b>${fmtMin(week)}</b><span>直近7日</span></div>`;
+  const by = {};
+  for (const s of state.sessions) if (s.d === today) { const j = s.j || (s.u && unitOf(s.u) && unitOf(s.u).subjectId) || '_'; by[j] = (by[j] || 0) + s.m; }
+  const t = state.timer, lw = liveWorkMs() / 60000;
+  if (lw > 0 && t) { const tj = t.target && t.target.startsWith('u:') ? (unitOf(t.target.slice(2)) || {}).subjectId : t.target && t.target.startsWith('s:') ? t.target.slice(2) : '_'; by[tj || '_'] = (by[tj || '_'] || 0) + lw; }
+  const rows = Object.entries(by).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(1, ...rows.map(r => r[1]));
+  $('#today-subj').innerHTML = rows.length ? rows.map(([j, m]) => {
+    const s = subjOf(j);
+    return `<div class="bl-row" style="--sc:${s ? slot(s.color) : 'var(--muted)'}"><div class="nm"><i class="dot"></i><span>${esc(s ? s.name : '指定なし')}</span></div><div class="bl-track"><span style="width:${Math.max(3, m / max * 100)}%"></span></div><div class="v">${fmtMin(m)}</div></div>`;
+  }).join('') : '<div class="empty" style="padding:4px">まだ記録がありません。単元の「開始」ボタンでタイマーが動きます。</div>';
+}
+
+/* ================= render: units ================= */
+let unitFilter = 'all';
+const openSteps = new Set();
+const ST_LABEL = { todo: '未着手', doing: '学習中', done: '完了' };
+function renderUnits() {
+  const today = todayStr();
+  $('#sample-banner').hidden = !hasSamples();
+  $$('#unit-filter button').forEach(b => b.setAttribute('aria-pressed', b.dataset.filter === unitFilter ? 'true' : 'false'));
+  const total = state.units.length, done = state.units.filter(u => u.status === 'done').length, doing = state.units.filter(u => u.status === 'doing').length;
+  const todayN = state.units.filter(u => u.plan === today || stepView(u, today).todayIdx.length).length;
+  $('#units-overview').innerHTML = total ? `
+    <div class="panel-head" style="margin-bottom:8px"><h3>全体の進み具合</h3><span class="sub mono">${done} / ${total} 単元（${Math.round(done / total * 100)}%）</span></div>
+    <div class="progress"><span style="width:${done / total * 100}%"></span></div>
+    <div class="sub" style="margin-top:8px">学習中 ${doing} ・ 未着手 ${total - done - doing} ・ 今日の予定 ${todayN}</div>`
+    : `<div class="empty" style="padding:2px">まだ単元がありません。下で科目を作って単元を追加するか、右上の「データ」から自分のデータファイルを読み込めます。</div>`;
+
+  const html = state.subjects.map(s => {
+    const us = state.units.filter(u => u.subjectId === s.id);
+    const d = us.filter(u => u.status === 'done').length;
+    const mins = us.reduce((a, u) => a + unitMinutes(u.id), 0) + state.sessions.filter(x => x.j === s.id && !x.u).reduce((a, x) => a + x.m, 0);
+    const shown = us.filter(u => unitFilter === 'all' || (unitFilter === 'done' ? u.status === 'done' : u.status !== 'done'));
+    const rows = shown.map(u => {
+      const m = unitMinutes(u.id), st = stepsOf(u);
+      const norma = st.filter(isNorma), nDone = norma.filter(x => x.done).length;
+      const np = nextPlan(u), open = openSteps.has(u.id);
+      const meta = [u.week ? esc(u.week) : '', u.book ? esc(u.book) : '', u.est ? `目安${u.est}分` : '', m >= 1 ? `記録${fmtMin(m)}` : '', u.doneAt && u.status === 'done' ? `${esc(mdOf(u.doneAt))} 完了` : ''].filter(Boolean).join(' · ');
+      const stepsBtn = st.length ? `<button class="steps-toggle" data-action="toggle-steps" data-id="${esc(u.id)}" aria-expanded="${open}">やること <b>${nDone}/${norma.length}</b>${st.length > norma.length ? `<small>＋応用${st.length - norma.length}</small>` : ''}<span class="chev">›</span></button>` : '';
+      const stepsList = st.length && open ? `<ul class="steps">${st.map((x, i) => stepLi(u, i, { showPlan: true, showDone: true })).join('')}</ul>${u.ref ? `<div class="note ref">参考: ${esc(u.ref)}</div>` : ''}` : '';
+      return `<li class="unit ${u.status === 'done' ? 'done' : ''}">
+        <label class="chk"><input type="checkbox" data-action="toggle-unit" data-id="${esc(u.id)}" ${u.status === 'done' ? 'checked' : ''} aria-label="${esc(u.name)} を完了にする"><span class="box"></span></label>
+        <div class="i-main"><div class="i-title">${esc(u.name)}${u.sample ? '<span class="badge ex">例</span>' : ''}</div>
+          <div class="i-meta">${meta}</div>${stepsBtn}</div>
+        ${stepsList || u.note ? `<div class="u-more">${stepsList}${u.note ? `<div class="note">メモ: ${esc(u.note)}</div>` : ''}</div>` : ''}
+        <div class="unit-ctrls">
+          <button class="st st-${u.status}" data-action="unit-status" data-id="${esc(u.id)}" title="押すと状態が切り替わります">${ST_LABEL[u.status] || '未着手'}</button>
+          ${st.length ? (np ? `<span class="next-plan">次 ${esc(mdOf(np))}</span>` : '') : `<input type="date" class="u-date" data-change="unit-date" data-id="${esc(u.id)}" value="${esc(u.plan || '')}" aria-label="${esc(u.name)} の予定日">`}
+          <button class="today-btn ${u.plan === today ? 'on' : ''}" data-action="unit-today" data-id="${esc(u.id)}" aria-pressed="${u.plan === today}">今日</button>
+          <button class="icon-btn" data-action="edit-unit" data-id="${esc(u.id)}" aria-label="${esc(u.name)} を編集">${ICON.edit}</button>
+        </div>
+      </li>`;
+    }).join('');
+    return `<div class="panel subject" style="--sc:${slot(s.color)}">
+      <div class="subj-head">
+        <i class="dot"></i><h3>${esc(s.name)}${s.sample ? '<span class="badge ex">例</span>' : ''}</h3>
+        <span class="meta">${d}/${us.length}${mins >= 1 ? ' · ' + fmtMin(mins) : ''}</span>
+        <span class="grow"></span>
+        <button class="icon-btn" data-action="add-unit-for" data-id="${esc(s.id)}" aria-label="${esc(s.name)} に単元を追加">${ICON.plus}</button>
+        <button class="icon-btn" data-action="edit-subject" data-id="${esc(s.id)}" aria-label="${esc(s.name)} を編集">${ICON.edit}</button>
+      </div>
+      <div class="subj-bar"><span style="width:${us.length ? d / us.length * 100 : 0}%"></span></div>
+      <ul class="units">${rows || `<li class="empty" style="padding:10px 0">${us.length ? 'この条件の単元はありません' : '単元がまだありません。＋から追加できます'}</li>`}</ul>
+    </div>`;
+  }).join('');
+  $('#subjects').innerHTML = html;
+
+  const sel = $('#units-subject'), prev = sel.value;
+  sel.innerHTML = state.subjects.length ? state.subjects.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('') : '<option value="">先に科目を追加してください</option>';
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+/* ================= render: train & bus ================= */
+const q = { mode: 'dep', live: true, date: null, time: null, day: 'auto', count: 6, open: new Set() };
+function currentQuery() {
+  if (q.live) { const sn = serviceNow(); return { date: sn.date, time: sn.min, nowMin: sn.min }; }
+  return { date: q.date, time: q.time, nowMin: null };
+}
+function syncQueryInputs() {
+  const cq = currentQuery();
+  const dEl = $('#q-date'), tEl = $('#q-time');
+  if (document.activeElement !== dEl) dEl.value = ymd(cq.date);
+  if (document.activeElement !== tEl) tEl.value = hm(cq.time);
+  $$('#q-mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === q.mode ? 'true' : 'false'));
+  $('#q-day').value = q.day;
+  $('#q-now').classList.toggle('primary', q.live);
+}
+const curRouteId = () => (ROUTES[state.settings.route] ? state.settings.route : firstRouteId());
+function renderRoutePick() {
+  const rk = curRouteId();
+  $('#route-pick').innerHTML = GROUPS.map(g => `<div class="rp-group ${g.bus ? 'bus' : ''}">
+    <span class="eyebrow">${esc(g.label)}</span>
+    <div class="rp-btns">${g.routes.map(id => { const r = ROUTES[id]; return `<button class="rp" data-route="${esc(id)}" aria-pressed="${id === rk}">${esc(r.short || r.label)}${r.note || r.sub ? `<small>${esc(r.note || r.sub)}</small>` : ''}</button>`; }).join('')}</div>
+  </div>`).join('');
+}
+function linemapHtml(r) {
+  const st = n => `<div class="lm-st"><i></i><span>${esc(n)}</span></div>`;
+  let h = st(r.legs[0].from);
+  r.legs.forEach((l, i) => {
+    h += `<div class="lm-seg" style="--lc:${lineVar(l.line)}" title="${esc(lineName(l.line))}"></div>` + st(l.to);
+    const nx = r.legs[i + 1];
+    if (nx) { const tp = transferDef((r.transfers || [])[i]); if (tp.walk || nx.from !== l.to) h += `<div class="lm-walk" title="${esc(tp.label)}"></div>` + st(nx.from); }
+  });
+  return h;
+}
+function countdown(dep, nowMin) {
+  if (nowMin == null) return '';
+  const d = dep - nowMin;
+  if (d < 0) return '';
+  if (d <= 1) return '<span class="res-cd soon">まもなく発車</span>';
+  if (d < 60) return `<span class="res-cd ${d <= 5 ? 'soon' : ''}">あと${d}分</span>`;
+  return `<span class="res-cd">あと${Math.floor(d / 60)}時間${d % 60}分</span>`;
+}
+function trainLabel(row) {
+  const exp = /特急|急行|快速|特快/.test(row.type) && !/各駅停車|普通/.test(row.type);
+  const mins = row.arr - row.dep;
+  return `<span class="tag ${exp ? 'exp' : ''}">${esc(row.type)}</span> ${esc(row.dest.replace(/〔.*〕/, ''))}${row.dest ? '行' : ''}${row.first ? '<span class="tag first">始発</span>' : ''} · ${mins}分${/〔/.test(row.dest) ? `<div class="note">${esc(row.dest.match(/〔(.*)〕/)[1])}</div>` : ''}`;
+}
+const comboKey = c => c.legs.map(l => l.dep + '-' + l.arr).join('|');
+function resultHtml(c, r, nowMin, best, open) {
+  const total = c.arr - c.dep, ride = c.legs.reduce((a, l) => a + (l.arr - l.dep), 0);
+  let tl = '';
+  c.legs.forEach((l, i) => {
+    const lg = r.legs[i], lc = lineVar(lg.line);
+    tl += `<span class="tm">${hm(l.dep)}</span><span class="nd" style="--lc:${lc}"></span><span class="st-name">${esc(lg.from)}<small>発</small></span>
+      <span></span><span class="rail" style="--lc:${lc}"></span><span class="ride"><b class="ln">${esc(lineName(lg.line))}</b> ${trainLabel(l)}</span>
+      <span class="tm">${hm(l.arr)}</span><span class="nd" style="--lc:${lc}"></span><span class="st-name">${esc(lg.to)}<small>着</small></span>`;
+    const x = c.xs[i];
+    if (x) {
+      const wait = c.legs[i + 1].dep - l.arr - x.min;
+      tl += `<span></span><span class="walk"></span><span class="xfer">${esc(x.label)} ${x.min}分${x.rush ? `<span class="tag rush">${esc(x.rushLabel)}</span>` : ''}${wait > 0 ? ` ＋ 待ち ${wait}分` : ''}</span>`;
+    }
+  });
+  const tagHtml = c.legs.map((l, i) => (i ? `<span>${esc(c.xs[i - 1].label)} ${l.dep - c.legs[i - 1].arr}分</span>` : '')
+    + `<span class="lt" style="--lc:${lineVar(r.legs[i].line)}">${esc(l.type)}</span>`).join('');
+  return `<li class="res ${best ? 'best' : ''}">
+    <button class="res-head" data-action="toggle-res" data-key="${comboKey(c)}" aria-expanded="${open}">
+      <span class="res-times">${hm(c.dep)}<span class="arr-sym">→</span>${hm(c.arr)}</span>
+      <span class="res-dur"><b>${total}</b>分（乗車${ride}分）</span>
+      ${countdown(c.dep, nowMin)}
+      <span class="res-tags">${tagHtml}</span>
+    </button>
+    ${open ? `<div class="res-body"><div class="tl">${tl}</div></div>` : ''}
+  </li>`;
+}
+function renderTrain() {
+  const has = Object.keys(ROUTES).length > 0;
+  $('#train-empty').hidden = has;
+  for (const id of ['route-pick', 'q-panel', 'res-note', 'results', 'more-wrap', 'xfer-settings', 'tt-source']) $('#' + id).hidden = !has;
+  if (!has) { $('#bus-day').hidden = true; return; }
+  const rk = curRouteId(), r = ROUTES[rk];
+  renderRoutePick();
+  syncQueryInputs();
+  const isBus = r.kind === 'bus';
+  $('#xfer-settings').hidden = isBus || !(r.transfers || []).length; $('#q-day').hidden = isBus; $('#bus-day').hidden = !isBus;
+  $('#tt-source').textContent = isBus ? (BUS.source || '') : ((PACK.transit || {}).source || '');
+  if (isBus) { renderBus(r); return; }
+  $('#linemap').innerHTML = linemapHtml(r);
+  const cq = currentQuery();
+  const out = searchRoutes(rk, cq.date, cq.time, q.mode, q.count, q.day);
+  const sdate = out.nextDay ? out.date : cq.date;
+  const nowMin = q.live && !out.nextDay && q.mode === 'dep' ? cq.nowMin : null;
+  let note = `<div class="sub">${esc(r.label)} ・ ${sdate.getMonth() + 1}/${sdate.getDate()}(${WD[sdate.getDay()]}) ${DAY_LABEL[out.day]}${q.day !== 'auto' ? '（手動）' : ''} ・ ${q.mode === 'dep' ? hm(cq.time) + ' 以降に出発' : hm(cq.time) + ' までに到着'}</div>`;
+  if (out.nextDay) note = `<div class="next-day">本日の運転は終了しました。翌日の始発からの経路です。</div>` + note;
+  $('#res-note').innerHTML = note;
+  renderXferSettings(r);
+  if (!out.res.length) { $('#results').innerHTML = `<li class="empty">条件に合う経路がありません。時刻を変えてみてください。</li>`; return; }
+  $('#results').innerHTML = out.res.map((c, i) => {
+    const k = comboKey(c);
+    const open = q.open.has(k) || (q.open.size === 0 && i === 0);
+    return resultHtml(c, r, nowMin, (i === 0 && q.mode === 'dep') || (q.mode === 'arr' && i === out.res.length - 1), open);
+  }).join('');
+}
+function renderXferSettings(r) {
+  const grid = $('#xfer-grid');
+  if (grid.contains(document.activeElement)) return;
+  const ids = [...new Set((r.transfers || []).filter(Boolean))];
+  grid.innerHTML = ids.map(id => {
+    const tp = transferDef(id);
+    const wins = tp.windows.map((w, k) => `<label>${esc(tp.label)}（${esc(w.label || '時間帯 ' + (k + 1))}）<span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input type="time" data-xfer="${esc(id)}" data-f="wfrom" data-w="${k}" value="${hm(w.from)}"> 〜 <input type="time" data-xfer="${esc(id)}" data-f="wto" data-w="${k}" value="${hm(w.to)}"> に着いたら <input type="number" min="0" max="30" style="width:4.2em" data-xfer="${esc(id)}" data-f="wmin" data-w="${k}" value="${w.min}"> 分</span></label>`).join('');
+    return `<label>${esc(tp.label)}（通常）<span><input type="number" min="0" max="30" style="width:4.2em" data-xfer="${esc(id)}" data-f="min" value="${tp.min}"> 分</span></label>${wins}`;
+  }).join('') + (Object.keys(state.settings.xfer || {}).length ? `<div><button class="linklike" data-action="xfer-reset">データファイルの値に戻す</button></div>` : '');
+}
+function busQuery() {
+  if (q.live) { const n = new Date(); return { date: new Date(n.getFullYear(), n.getMonth(), n.getDate()), time: n.getHours() * 60 + n.getMinutes(), live: true }; }
+  return { date: q.date, time: q.time, live: false };
+}
+const mdw = d => `${d.getMonth() + 1}/${d.getDate()}(${WD[d.getDay()]})`;
+function busTypeTag(t) { return t === null ? '<span class="tag off">日程表の範囲外</span>' : t === '0' ? '<span class="tag off">運休日</span>' : `<span class="tag bus">${esc(BUS.dayTypes[t] || t)}</span>`; }
+function busDepInfo(r, x) {
+  const stops = r.depStops || [];
+  return stops.length > 1 ? stops.map(s => `${esc(s.label)} ${hm(x.dep + (+s.offset || 0))}発`).join(' ・ ') : `${esc(r.from)}発`;
+}
+function busCard(x, r, nowMin, best) {
+  return `<li class="res ${best ? 'best' : ''}"><div class="res-head">
+    <span class="res-times">${hm(x.dep)}<span class="arr-sym">→</span>${hm(x.arr)}</span>
+    <span class="res-dur">約<b>${x.arr - x.dep}</b>分</span>
+    ${countdown(x.dep, nowMin)}
+    <span class="res-tags"><span class="lt" style="--lc:var(--bus)">${esc(BUS.label)} ${esc(busClsLabel(x.c))}</span><span>${busDepInfo(r, x)}</span></span>
+  </div></li>`;
+}
+function busTable(r, trips, markMin) {
+  const stops = (r.depStops && r.depStops.length) ? r.depStops : [{ label: r.from, offset: 0 }];
+  const nextIdx = markMin == null ? -1 : trips.findIndex(x => x.dep >= markMin);
+  const head = stops.map(s => `<th>${esc(s.label)} 発</th>`).join('') + `<th>${esc(r.arrLabel || (r.to + ' 着'))}</th><th>便</th>`;
+  const rows = trips.map((x, i) => {
+    const cls = markMin == null ? '' : i === nextIdx ? 'next' : x.dep < markMin ? 'past' : '';
+    const cells = stops.map((s, k) => `<td class="${k ? 'sub2' : ''}">${hm(x.dep + (+s.offset || 0))}</td>`).join('') + `<td>${hm(x.arr)}</td>`;
+    return `<tr class="${cls}">${cells}<td class="cls">${esc(busClsLabel(x.c, true))}</td></tr>`;
+  }).join('');
+  return `<div class="bus-wrap"><table class="bus"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function renderBus(r) {
+  const st = n => `<div class="lm-st"><i></i><span>${esc(n)}</span></div>`;
+  $('#linemap').innerHTML = st(r.from) + `<div class="lm-seg" style="--lc:var(--bus)" title="${esc(BUS.label)}"></div>` + st(r.to);
+  const bq = busQuery();
+  const out = busSearch(r.id, bq.date, bq.time, q.mode, q.count);
+  const sameDay = ymd(out.date) === ymd(bq.date);
+  const nowMin = bq.live && sameDay && q.mode === 'dep' ? bq.time : null;
+  let note = `<div class="sub">${esc(r.label)} ・ ${mdw(bq.date)} ${busTypeTag(busDayType(bq.date))} ・ ${q.mode === 'dep' ? hm(bq.time) + ' 以降に出発' : hm(bq.time) + ' までに到着'}</div>`;
+  if (out.nextDay) note = `<div class="next-day">${out.fromType === '0' ? 'この日は運休です' : 'この日の運行は終了しました'}。次の運行日 ${mdw(out.date)} の便です。</div>` + note;
+  if (out.outOfRange) note = `<div class="next-day">運行日程の範囲外の日付です。${out.trips.length ? '下の表は参考の時刻です。' : ''}</div>` + note;
+  $('#res-note').innerHTML = note;
+  $('#results').innerHTML = out.res.length
+    ? out.res.map((x, i) => busCard(x, r, nowMin, (q.mode === 'dep' && i === 0) || (q.mode === 'arr' && i === out.res.length - 1))).join('')
+    : `<li class="empty">${out.outOfRange ? '運行日程が登録されていない日付です。' : out.none ? 'この先の運行日が日程にありません。' : q.mode === 'arr' ? 'この時刻までに着く便はありません。' : '条件に合う便がありません。'}</li>`;
+  const markMin = sameDay ? bq.time : 0;
+  $('#bus-day').innerHTML = `<div class="panel-head"><h3>${mdw(out.date)} の全便（${esc(r.from)} 発）</h3>${busTypeTag(out.outOfRange ? null : out.type)}</div>`
+    + (out.trips.length ? busTable(r, out.trips, out.outOfRange ? null : (q.mode === 'dep' ? markMin : null)) : '<div class="empty">この日は運休です。</div>')
+    + (BUS.legend.length ? `<div class="bus-legend">${BUS.legend.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : '');
+}
+
+/* today card: groups from the data file; optional auto switch (e.g. 行き until 14:00, then 帰り) */
+const NT_KEY = 'manabi-nt-dir';
+let ntMem = null;
+const trainGroups = () => GROUPS.filter(g => !g.bus);
+function ntAuto(sn) { const gs = trainGroups(); if (AUTO) return sn.min >= AUTO.at ? AUTO.after : AUTO.before; return gs[0] ? gs[0].id : ''; }
+function ntNextSwitch(now) {
+  if (!AUTO) return 8.64e15;
+  const sn = serviceNow(now);
+  return sn.date.getTime() + (sn.min < AUTO.at ? AUTO.at : 1440 + 180) * 60000;
+}
+function ntRead() { try { return JSON.parse(localStorage.getItem(NT_KEY) || 'null'); } catch (e) { return ntMem; } }
+function ntWrite(v) {
+  ntMem = v;
+  try { if (v) localStorage.setItem(NT_KEY, JSON.stringify(v)); else localStorage.removeItem(NT_KEY); } catch (e) { /* memory only */ }
+}
+function ntState() {
+  const now = new Date(), o = ntRead(), gs = trainGroups();
+  if (o && gs.some(g => g.id === o.dir) && o.until > now.getTime()) return { dir: o.dir, manual: true, until: o.until };
+  return { dir: ntAuto(serviceNow(now)), manual: false };
+}
+function ntSet(dir) {
+  const now = new Date();
+  if (dir === ntAuto(serviceNow(now))) ntWrite(null);
+  else ntWrite({ dir, until: ntNextSwitch(now) });
+}
+function renderNextTrain() {
+  const gs = trainGroups(), seg = $('#nt-dir');
+  if (!gs.length) {
+    seg.hidden = true;
+    $('#nt-route').innerHTML = '';
+    $('#nt-list').innerHTML = `<div class="empty">時刻表データを読み込むと、ここに次の電車が出ます。<br><button class="linklike" data-action="open-data">データを読み込む</button></div>`;
+    return;
+  }
+  const nt = ntState(), sn = serviceNow();
+  const g = gs.find(x => x.id === nt.dir) || gs[0];
+  const lbl = id => (gs.find(x => x.id === id) || {}).label || '';
+  seg.hidden = gs.length < 2;
+  seg.innerHTML = gs.map(x => `<button data-ntdir="${esc(x.id)}" aria-pressed="${x.id === g.id}">${esc(x.label)}</button>`).join('');
+  if (nt.manual && AUTO) {
+    const u = new Date(nt.until);
+    $('#nt-route').innerHTML = `<span>手動で<b>${esc(g.label)}</b>を表示中（${pad(u.getHours())}:${pad(u.getMinutes())}に自動に戻ります）</span><button class="linklike" data-action="nt-auto">自動に戻す</button>`;
+  } else if (AUTO) {
+    $('#nt-route').innerHTML = `<span>自動：${hm(AUTO.at)}までは${esc(lbl(AUTO.before))}、${hm(AUTO.at)}からは${esc(lbl(AUTO.after))} ・ いまは<b>${esc(g.label)}</b></span>`;
+  } else $('#nt-route').innerHTML = '';
+  $('#nt-list').innerHTML = g.routes.map(rk => {
+    const r = ROUTES[rk];
+    const out = searchRoutes(rk, sn.date, sn.min, 'dep', 2, 'auto');
+    const lines = r.legs.map(l => `<i style="--lc:${lineVar(l.line)}"></i>`).join('');
+    const rows = out.res.length ? out.res.map(c => {
+      const wait = c.xs.length ? c.legs.slice(1).reduce((a, l, i) => a + (l.dep - c.legs[i].arr), 0) : 0;
+      return `<div class="mini-row"><span class="res-times">${hm(c.dep)}<span class="arr-sym">→</span>${hm(c.arr)}</span><span class="res-dur"><b>${c.arr - c.dep}</b>分${c.xs.length ? ` · 乗換${wait}分` : ''}</span>${out.nextDay ? '' : countdown(c.dep, sn.min)}</div>`;
+    }).join('') : '<div class="empty">経路が見つかりません</div>';
+    return `<div class="nt-route">
+      <button class="nt-rhead" data-action="open-route" data-rk="${esc(rk)}"><span class="lines">${lines}</span>${esc(r.label)} <small>${esc(r.note || '')}${out.nextDay ? ' ・ 翌日の始発' : ''}</small><span class="go">経路 →</span></button>
+      <div class="mini-res">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ================= data import / backup ================= */
+let pendingPack = null;
+function packSummary(p) {
+  const parts = [];
+  if (p.transit && Array.isArray(p.transit.routes)) parts.push(`電車 ${p.transit.routes.length}経路`);
+  if (p.bus && Array.isArray(p.bus.routes)) parts.push(`バス ${p.bus.routes.length}路線`);
+  if (p.units && Array.isArray(p.units.units)) parts.push(`単元 ${p.units.units.length}件`);
+  if (p.log && Array.isArray(p.log.sessions)) parts.push(`勉強の記録 ${p.log.sessions.length}件`);
+  return parts.join(' ・ ') || '読み込める内容がありません';
+}
+function parsePack(text) {
+  let p;
+  try { p = JSON.parse(text); } catch (e) { return { error: 'JSONとして読めませんでした。ファイルの中身を確認してください。' }; }
+  if (!p || p.format !== 'manabi-data') return { error: 'まなび時刻表のデータファイルではありません（"format": "manabi-data" が必要です）。' };
+  return { pack: p };
+}
+function showImportPreview(p) {
+  pendingPack = p;
+  const box = $('#d-preview');
+  if (!box) return;
+  const opt = (id, label, on) => `<label class="ck"><input type="checkbox" id="${id}" ${on ? 'checked' : ''}> ${label}</label>`;
+  box.innerHTML = `<div class="import-box"><b>${esc(p.title || 'データファイル')}</b><div class="sub">${esc(packSummary(p))}</div>
+    ${p.transit ? opt('d-transit', '電車の時刻表（いまの時刻表と入れ替え）', true) : ''}
+    ${p.bus ? opt('d-bus', 'バスの時刻表（いまのバスと入れ替え）', true) : ''}
+    ${p.units ? opt('d-units', '科目と単元', true) + `<div class="radios"><label><input type="radio" name="d-um" value="replace" checked> いまの単元と入れ替える</label><label><input type="radio" name="d-um" value="merge"> いまの単元に追加する</label></div>` : ''}
+    ${p.log ? opt('d-log', '勉強の記録（いまの記録と入れ替え）', true) : ''}
+    ${p.settings ? opt('d-settings', '設定（乗換時間・タイマー）', true) : ''}
+    <button class="btn primary" data-modal="apply">この内容で読み込む</button></div>`;
+}
+// dates may be written relative to the import day ("+0" = today, "-1" = yesterday)
+const relDate = v => (typeof v === 'string' && /^[+-]\d+$/.test(v) ? ymd(addDays(new Date(), +v)) : (v || null));
+function cleanUnits(list, subjIds) {
+  const ok = s => ['todo', 'doing', 'done'].includes(s) ? s : 'todo';
+  return list.filter(u => u && u.id && u.name && subjIds.has(u.subjectId)).map(u => ({
+    ...u, id: String(u.id), name: String(u.name).slice(0, 200), status: ok(u.status), plan: relDate(u.plan), doneAt: relDate(u.doneAt),
+    steps: Array.isArray(u.steps) ? u.steps.filter(s => s && s.t).map(s => ({ t: String(s.t), b: s.b ? String(s.b) : '', kind: s.kind === 'a' ? 'a' : 'n', plan: relDate(s.plan), done: relDate(s.done) })) : []
+  }));
+}
+function applyPendingPack() {
+  const p = pendingPack; if (!p) return;
+  const on = id => { const el = $('#' + id); return !!(el && el.checked); };
+  let transitChanged = false;
+  if (on('d-transit')) { PACK.transit = p.transit; transitChanged = true; }
+  if (on('d-bus')) { PACK.bus = p.bus; transitChanged = true; }
+  if (transitChanged) {
+    if (!savePack()) toast('時刻表をこの端末に保存できませんでした（ブラウザの保存容量を確認してください）');
+    rebuildData();
+    state.settings.xfer = {};
+    if (!ROUTES[state.settings.route]) state.settings.route = firstRouteId();
+  }
+  if (on('d-units') && p.units) {
+    const subs = (p.units.subjects || []).filter(s => s && s.id && s.name).map(s => ({ ...s, id: String(s.id), name: String(s.name).slice(0, 60), color: (s.color | 0) % 8 }));
+    const mode = (($$('input[name="d-um"]').find(x => x.checked) || {}).value) || 'replace';
+    if (mode === 'replace') {
+      state.subjects = subs;
+      state.units = cleanUnits(p.units.units || [], new Set(subs.map(s => s.id)));
+      if (Array.isArray(p.units.tasks)) state.tasks = p.units.tasks.filter(t => t && t.id && t.text).map(t => ({ ...t, date: relDate(t.date) }));
+    } else {
+      const have = new Set(state.subjects.map(s => s.id));
+      for (const s of subs) if (!have.has(s.id)) state.subjects.push(s);
+      const ids = new Set(state.subjects.map(s => s.id)), uh = new Set(state.units.map(u => u.id));
+      for (const u of cleanUnits(p.units.units || [], ids)) if (!uh.has(u.id)) state.units.push(u);
+    }
+  }
+  if (on('d-log') && p.log) { state.sessions = (p.log.sessions || []).filter(s => s && s.id && s.d); state.archive = p.log.archive || {}; }
+  if (on('d-settings') && p.settings) state.settings = { ...state.settings, ...p.settings };
+  pendingPack = null;
+  commit({ settings: true });
+  toast('データを読み込みました');
+}
+function exportPack() {
+  return {
+    format: 'manabi-data', version: 1, title: 'まなび時刻表のバックアップ', exportedAt: new Date().toISOString(),
+    transit: PACK.transit || undefined, bus: PACK.bus || undefined,
+    units: { subjects: state.subjects, units: state.units, tasks: state.tasks },
+    log: { sessions: state.sessions, archive: state.archive }, settings: state.settings
+  };
+}
+function openDataModal() {
+  const nTrain = Object.values(ROUTES).filter(r => r.kind === 'train').length, nBus = Object.values(ROUTES).filter(r => r.kind === 'bus').length;
+  openModal('データの読み込み・バックアップ', `
+    <p class="sub" style="margin:0">いまこの端末に入っているデータ：電車 ${nTrain}経路 ・ バス ${nBus}路線 ・ 単元 ${state.units.length}件 ・ 記録 ${state.sessions.length}件</p>
+    <div class="data-row">
+      <label class="btn primary file-btn">データファイルを選ぶ<input type="file" id="d-file" accept=".json,application/json"></label>
+      <button class="btn" data-modal="sample">お試しデータ</button>
+    </div>
+    <details><summary class="sub">テキストを貼り付けて読み込む</summary>
+      <textarea id="d-text" rows="4" placeholder='{"format": "manabi-data", ...}' style="margin-top:6px"></textarea>
+      <button class="btn" data-modal="paste" style="margin-top:6px">貼り付けた内容を確認</button>
+    </details>
+    <div id="d-preview"></div>
+    <hr class="sep">
+    <div class="data-row">
+      <button class="btn" data-modal="export">バックアップを保存</button>
+      <button class="btn" data-modal="copy">バックアップをコピー</button>
+    </div>
+    <p class="note" style="margin:0">データはこの端末のブラウザの中だけに保存され、どこにも送られません。別の端末に移すときは、バックアップを保存してその端末で読み込んでください。</p>
+    ${nTrain || nBus ? '<button class="linklike danger-link" data-modal="clear-transit">この端末の時刻表データを消す</button>' : ''}`,
+    [{ id: 'close', label: '閉じる' }],
+    a => {
+      if (a === 'close') return true;
+      if (a === 'apply') { applyPendingPack(); return true; }
+      if (a === 'paste') { const r = parsePack($('#d-text').value); if (r.error) toast(r.error); else showImportPreview(r.pack); return false; }
+      if (a === 'sample') {
+        fetch('sample-data.json', { cache: 'no-store' }).then(res => { if (!res.ok) throw new Error(); return res.text(); })
+          .then(t => { const r = parsePack(t); if (r.error) toast(r.error); else showImportPreview(r.pack); })
+          .catch(() => toast('お試しデータはGitHub版のページでだけ読み込めます'));
+        return false;
+      }
+      if (a === 'export') {
+        try {
+          const blob = new Blob([JSON.stringify(exportPack())], { type: 'application/json' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob); link.download = `manabi-backup-${todayStr()}.json`;
+          document.body.appendChild(link); link.click(); link.remove();
+          setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+          toast('バックアップのファイルを保存しました');
+        } catch (e) { toast('保存できませんでした。「コピー」を使ってください'); }
+        return false;
+      }
+      if (a === 'copy') {
+        const text = JSON.stringify(exportPack());
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast('バックアップをコピーしました'), () => { $('#d-text').value = text; $('#d-text').select(); toast('下の欄に出しました。全部選んでコピーしてください'); });
+        else { $('#d-text').value = text; toast('下の欄に出しました。全部選んでコピーしてください'); }
+        return false;
+      }
+      if (a === 'clear-transit') {
+        if (!$('#d-clear-ok')) { $('#d-preview').innerHTML = '<div class="import-box">時刻表データ（電車・バス）をこの端末から消します。単元や記録は消えません。<br><button class="btn danger" data-modal="clear-transit" id="d-clear-ok">消す</button></div>'; return false; }
+        PACK = {}; savePack(); try { localStorage.removeItem(PACK_KEY); } catch (e) { /* ignore */ }
+        rebuildData(); commit({ settings: true }); toast('時刻表データを消しました'); return true;
+      }
+      return false;
+    });
+  const f = $('#d-file');
+  if (f) f.addEventListener('change', () => {
+    const file = f.files && f.files[0]; if (!file) return;
+    const rd = new FileReader();
+    rd.onload = () => { const r = parsePack(String(rd.result)); if (r.error) toast(r.error); else showImportPreview(r.pack); };
+    rd.onerror = () => toast('ファイルを読めませんでした');
+    rd.readAsText(file);
+  });
+}
+
+/* ================= timer ================= */
+function ensureTimer() {
+  if (!state.timer) state.timer = { mode: 'up', running: false, startedAt: null, acc: 0, target: '', phase: 'work', cycle: 0, sessionStart: null };
+  return state.timer;
+}
+function timerElapsed(t = state.timer) { if (!t) return 0; return (t.acc || 0) + (t.running && t.startedAt ? Date.now() - t.startedAt : 0); }
+function phaseTarget(t) { return (t.phase === 'break' ? state.settings.pomoBreak : state.settings.pomoWork) * 60000; }
+function parseTarget(v) {
+  if (!v) return { u: null, j: null };
+  if (v.startsWith('u:')) { const u = unitOf(v.slice(2)); return { u: u ? u.id : null, j: u ? u.subjectId : null }; }
+  if (v.startsWith('s:')) return { u: null, j: subjOf(v.slice(2)) ? v.slice(2) : null };
+  return { u: null, j: null };
+}
+function logSession(ms, start, target, dateOverride) {
+  const m = Math.round(ms / 6000) / 10;
+  if (m < 1) return false;
+  const { u, j } = parseTarget(target);
+  state.sessions.push({ id: uid(), d: dateOverride || ymd(new Date(start)), s: start, m, u, j });
+  return true;
+}
+let audioCtx = null, wakeLock = null;
+function unlockAudio() { try { audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); } catch (e) { audioCtx = null; } }
+function beep() {
+  if (!audioCtx) return;
+  try {
+    const t0 = audioCtx.currentTime;
+    [0, .28, .56].forEach((off, i) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = i === 2 ? 1046 : 784;
+      g.gain.setValueAtTime(0.0001, t0 + off); g.gain.exponentialRampToValueAtTime(0.25, t0 + off + .02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + off + .24);
+      o.connect(g).connect(audioCtx.destination); o.start(t0 + off); o.stop(t0 + off + .26);
+    });
+  } catch (e) { /* audio blocked */ }
+}
+async function holdWake(on) {
+  try {
+    if (on && !wakeLock && navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen');
+    if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && state.timer && state.timer.running) { wakeLock = null; holdWake(true); } });
+function timerStart() {
+  const t = ensureTimer();
+  unlockAudio();
+  if (!t.target) { /* allowed: unassigned study */ }
+  t.running = true; t.startedAt = Date.now();
+  if (!t.sessionStart && t.phase !== 'break') t.sessionStart = Date.now();
+  const { u } = parseTarget(t.target);
+  const unit = u && unitOf(u);
+  if (unit && unit.status === 'todo') unit.status = 'doing';
+  holdWake(true);
+  commit();
+}
+function timerPause() { const t = ensureTimer(); t.acc = timerElapsed(); t.running = false; t.startedAt = null; holdWake(false); commit(); }
+function timerFinish() {
+  const t = ensureTimer();
+  const ms = timerElapsed();
+  if (t.phase !== 'break') {
+    const ok = logSession(ms, t.sessionStart || Date.now() - ms, t.target);
+    toast(ok ? `${fmtMin(ms / 60000)} を記録しました` : '1分未満のため記録しませんでした');
+  }
+  Object.assign(t, { running: false, startedAt: null, acc: 0, phase: 'work', sessionStart: null });
+  holdWake(false);
+  commit();
+}
+function timerReset() { const t = ensureTimer(); Object.assign(t, { running: false, startedAt: null, acc: 0, phase: 'work', sessionStart: null, cycle: 0 }); holdWake(false); commit(); toast('タイマーをリセットしました（記録なし）'); }
+function phaseCheck() {
+  const t = state.timer;
+  if (!t || t.mode !== 'pomo' || !t.running) return;
+  let guard = 0;
+  while (t.running && timerElapsed(t) >= phaseTarget(t) && guard++ < 4) {
+    const target = phaseTarget(t);
+    const endAt = t.startedAt + (target - (t.acc || 0));
+    if (t.phase === 'work') {
+      logSession(target, t.sessionStart || endAt - target, t.target);
+      t.cycle = (t.cycle || 0) + 1;
+      Object.assign(t, { phase: 'break', acc: 0, startedAt: endAt, sessionStart: null });
+      beep(); toast(`集中${state.settings.pomoWork}分おつかれさま。休憩しましょう`);
+    } else {
+      Object.assign(t, { phase: 'work', acc: 0, startedAt: null, running: false, sessionStart: null });
+      beep(); toast('休憩おわり。次の集中を始めましょう');
+      holdWake(false);
+    }
+  }
+  if (guard) commit();
+}
+function targetOptions(selected, withNone = true) {
+  const today = todayStr();
+  let html = withNone ? `<option value="">指定なし</option>` : '';
+  const todays = state.units.filter(u => u.plan === today && u.status !== 'done');
+  if (todays.length) html += `<optgroup label="今日の予定">` + todays.map(u => `<option value="u:${esc(u.id)}">${esc(targetLabel(u.id))}</option>`).join('') + '</optgroup>';
+  for (const s of state.subjects) {
+    const us = state.units.filter(u => u.subjectId === s.id && !(u.plan === today && u.status !== 'done') && (u.status !== 'done' || 'u:' + u.id === selected));
+    html += `<optgroup label="${esc(s.name)}"><option value="s:${esc(s.id)}">${esc(s.name)}（科目全般）</option>` + us.map(u => `<option value="u:${esc(u.id)}">${esc(u.name)}</option>`).join('') + '</optgroup>';
+  }
+  return html;
+}
+function renderTimer() {
+  const t = ensureTimer();
+  const active = t.running || timerElapsed() > 0;
+  $$('#t-mode button').forEach(b => { b.setAttribute('aria-pressed', b.dataset.tmode === t.mode ? 'true' : 'false'); b.disabled = active && b.dataset.tmode !== t.mode; });
+  const sel = $('#t-target');
+  if (document.activeElement !== sel) { sel.innerHTML = targetOptions(t.target); sel.value = [...sel.options].some(o => o.value === t.target) ? t.target : ''; }
+  $('#pomo-set').hidden = t.mode !== 'pomo';
+  if (document.activeElement !== $('#pomo-work')) $('#pomo-work').value = state.settings.pomoWork;
+  if (document.activeElement !== $('#pomo-break')) $('#pomo-break').value = state.settings.pomoBreak;
+  let btns = '';
+  if (t.running) btns = `<button class="btn" data-action="t-pause">一時停止</button><button class="btn primary" data-action="t-finish">${t.phase === 'break' ? '休憩を終える' : '終了して記録'}</button>`;
+  else if (active) btns = `<button class="btn primary" data-action="t-start">再開</button><button class="btn" data-action="t-finish">${t.phase === 'break' ? '休憩を終える' : '終了して記録'}</button><button class="btn ghost" data-action="t-reset">リセット</button>`;
+  else btns = `<button class="btn primary" data-action="t-start">${t.mode === 'pomo' ? (t.cycle ? `集中 ${t.cycle + 1}回目を開始` : '集中を開始') : '開始'}</button>`;
+  $('#t-btns').innerHTML = btns;
+  renderClock();
+  renderSessions();
+  renderWeek();
+}
+function renderClock() {
+  const t = state.timer;
+  if (!t) return;
+  const el = timerElapsed();
+  const ring = $('#ring'), C = 339.29;
+  if (t.mode === 'pomo') {
+    const target = phaseTarget(t), rem = Math.max(0, target - el);
+    $('#clock').textContent = clockStr(rem);
+    $('#phase').textContent = (t.phase === 'break' ? '休憩' : '集中') + (t.cycle ? ` ・ ${t.cycle}回完了` : '') + (t.running ? '' : el > 0 ? ' ・ 一時停止中' : '');
+    ring.style.strokeDashoffset = String(C * (1 - Math.min(1, el / target)));
+    $('#clock-wrap').classList.toggle('brk', t.phase === 'break');
+  } else {
+    $('#clock').textContent = clockStr(el);
+    $('#phase').textContent = t.running ? '計測中' : el > 0 ? '一時停止中' : '準備OK';
+    ring.style.strokeDashoffset = String(C * (1 - ((el / 60000) % 60) / 60));
+    $('#clock-wrap').classList.remove('brk');
+  }
+}
+function renderSessions() {
+  const today = todayStr();
+  const list = state.sessions.filter(s => s.d === today).sort((a, b) => b.s - a.s);
+  const total = minutesOn(today);
+  $('#t-today-total').textContent = '合計 ' + fmtMin(total + liveWorkMs() / 60000);
+  $('#session-list').innerHTML = list.length ? list.map(s => {
+    const d = new Date(s.s);
+    const subj = subjOf(s.j || (s.u && unitOf(s.u) && unitOf(s.u).subjectId));
+    return `<li style="--sc:${subj ? slot(subj.color) : 'var(--muted)'}"><span class="t">${pad(d.getHours())}:${pad(d.getMinutes())}</span><i class="dot"></i><span class="what">${esc(targetLabel(s.u, s.j))}${s.x ? '<span class="badge ex">例</span>' : ''}</span><span class="m">${fmtMin(s.m)}</span><button class="icon-btn" data-action="delete-session" data-id="${esc(s.id)}" aria-label="この記録を削除">${ICON.x}</button></li>`;
+  }).join('') : '<li class="empty">今日の記録はまだありません。</li>';
+  const ms = $('#m-target');
+  if (document.activeElement !== ms) { const pv = ms.value; ms.innerHTML = targetOptions(pv); if ([...ms.options].some(o => o.value === pv)) ms.value = pv; }
+  if (!$('#m-date').value) $('#m-date').value = today;
+}
+function renderWeek() {
+  const days = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i - 6));
+  const vals = days.map((d, i) => minutesOn(ymd(d)) + (i === 6 ? liveWorkMs() / 60000 : 0));
+  const total = vals.reduce((a, b) => a + b, 0);
+  $('#week-total').textContent = '合計 ' + fmtMin(total) + ' ・ 1日平均 ' + fmtMin(total / 7);
+  const maxV = Math.max(...vals), step = maxV > 240 ? 120 : maxV > 120 ? 60 : 30, top = Math.max(step * 2, Math.ceil(maxV / step) * step);
+  const W = 560, H = 210, L = 40, R = 8, T = 22, B = 30, pw = W - L - R, ph = H - T - B, bw = pw / 7, barW = Math.min(44, bw * 0.56);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="この7日間の勉強時間の棒グラフ">`;
+  for (let v = 0; v <= top; v += step) {
+    const y = T + ph - v / top * ph;
+    svg += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" stroke="${v === 0 ? 'var(--axis)' : 'var(--grid)'}" stroke-width="1"/>`;
+    svg += `<text x="${L - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--f-mono)">${v >= 60 ? v / 60 + 'h' : v + 'm'}</text>`;
+  }
+  days.forEach((d, i) => {
+    const v = vals[i], h = v / top * ph, x = L + bw * i + (bw - barW) / 2, y = T + ph - h, rr = Math.min(4, h);
+    if (h > 0.5) svg += `<path d="M${x},${T + ph} V${y + rr} Q${x},${y} ${x + rr},${y} H${x + barW - rr} Q${x + barW},${y} ${x + barW},${y + rr} V${T + ph} Z" fill="var(--accent)" opacity="${i === 6 ? 1 : .78}"/>`;
+    if (i === 6 || (v === maxV && v > 0)) svg += `<text x="${x + barW / 2}" y="${y - 6}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink-2)" font-family="var(--f-mono)">${Math.round(v)}分</text>`;
+    svg += `<text x="${x + barW / 2}" y="${H - 10}" text-anchor="middle" font-size="11" fill="${i === 6 ? 'var(--ink)' : 'var(--muted)'}" font-weight="${i === 6 ? 700 : 400}">${i === 6 ? '今日' : (d.getMonth() + 1) + '/' + d.getDate()}</text>`;
+    svg += `<rect class="hit" data-i="${i}" x="${L + bw * i}" y="${T}" width="${bw}" height="${ph}" fill="transparent" tabindex="0"><title>${(d.getMonth() + 1)}/${d.getDate()}(${WD[d.getDay()]}) ${fmtMin(v)}</title></rect>`;
+  });
+  svg += '</svg><div class="tip" id="week-tip"></div>';
+  const box = $('#week-chart');
+  box.innerHTML = svg;
+  const tip = $('#week-tip');
+  const show = (i, el) => {
+    const d = days[i]; const r = el.getBoundingClientRect(), br = box.getBoundingClientRect();
+    tip.textContent = `${d.getMonth() + 1}/${d.getDate()}(${WD[d.getDay()]})  ${fmtMin(vals[i])}`;
+    tip.style.left = (r.left - br.left + r.width / 2) + 'px'; tip.style.top = (Math.max(0, (T + ph - vals[i] / top * ph) / H * br.height - 8)) + 'px';
+    tip.classList.add('on');
+  };
+  $$('.hit', box).forEach(el => {
+    el.addEventListener('pointerenter', () => show(+el.dataset.i, el));
+    el.addEventListener('focus', () => show(+el.dataset.i, el));
+    el.addEventListener('pointerleave', () => tip.classList.remove('on'));
+    el.addEventListener('blur', () => tip.classList.remove('on'));
+  });
+  $('#week-table').innerHTML = `<table class="mini"><thead><tr><th>日付</th><th>勉強時間</th></tr></thead><tbody>${days.map((d, i) => `<tr><td>${d.getMonth() + 1}/${d.getDate()}(${WD[d.getDay()]})</td><td>${fmtMin(vals[i])}</td></tr>`).join('')}</tbody></table>`;
+}
+
+/* ================= render all ================= */
+function render() {
+  renderHeader();
+  if (view === 'today') renderToday();
+  else if (view === 'units') renderUnits();
+  else if (view === 'train') renderTrain();
+  else if (view === 'timer') renderTimer();
+}
+
+/* ================= actions ================= */
+function setUnitDone(u, done) {
+  const today = todayStr();
+  if (done) { u.status = 'done'; u.doneAt = today; if (u.plan && u.plan < today) u.plan = today; }
+  else { u.status = unitMinutes(u.id) >= 1 ? 'doing' : 'todo'; u.doneAt = null; }
+}
+function nextColor() {
+  const used = state.subjects.map(s => s.color);
+  for (let i = 0; i < 8; i++) if (!used.includes(i)) return i;
+  return state.subjects.length % 8;
+}
+function editUnit(id) {
+  const u = unitOf(id); if (!u) return;
+  const sOpts = state.subjects.map(s => `<option value="${esc(s.id)}" ${s.id === u.subjectId ? 'selected' : ''}>${esc(s.name)}</option>`).join('');
+  openModal('単元を編集', `
+    <label>単元名<input type="text" id="e-name" value="${esc(u.name)}"></label>
+    <label>科目<select id="e-subj">${sOpts}</select></label>
+    <label>目安時間（分）<input type="number" id="e-est" min="0" max="600" step="5" value="${esc(u.est || '')}"></label>
+    <div id="e-confirm" class="note" hidden>もう一度「削除」を押すと、この単元と記録との紐付けを削除します（勉強時間の合計は残ります）。</div>`,
+    [{ id: 'del', label: '削除', cls: 'danger left' }, { id: 'cancel', label: 'キャンセル' }, { id: 'save', label: '保存', cls: 'primary' }],
+    a => {
+      if (a === 'cancel') return true;
+      if (a === 'del') {
+        const c = $('#e-confirm');
+        if (c.hidden) { c.hidden = false; return false; }
+        state.units = state.units.filter(x => x.id !== id);
+        for (const s of state.sessions) if (s.u === id) { s.j = s.j || u.subjectId; s.u = null; }
+        if (state.timer && state.timer.target === 'u:' + id) state.timer.target = 's:' + u.subjectId;
+        commit(); toast('単元を削除しました'); return true;
+      }
+      const name = $('#e-name').value.trim();
+      if (!name) { $('#e-name').focus(); return false; }
+      u.name = name; u.subjectId = $('#e-subj').value || u.subjectId; u.est = Math.max(0, Math.min(600, +$('#e-est').value || 0)) || null;
+      commit(); return true;
+    });
+}
+function editSubject(id) {
+  const s = subjOf(id); if (!s) return;
+  let color = s.color;
+  const sw = () => Array.from({ length: 8 }, (_, i) => `<button type="button" class="swatch" data-sw="${i}" style="--sc:${slot(i)}" aria-label="色${i + 1}" aria-pressed="${i === color}"></button>`).join('');
+  const n = state.units.filter(u => u.subjectId === id).length;
+  openModal('科目を編集', `
+    <label>科目名<input type="text" id="e-sname" value="${esc(s.name)}"></label>
+    <div><div class="sub" style="margin-bottom:6px">色</div><div class="swatches" id="e-sw">${sw()}</div></div>
+    <div id="e-sconfirm" class="note" hidden>もう一度「削除」を押すと、この科目と単元 ${n} 件を削除します。</div>`,
+    [{ id: 'del', label: '削除', cls: 'danger left' }, { id: 'cancel', label: 'キャンセル' }, { id: 'save', label: '保存', cls: 'primary' }],
+    a => {
+      if (a === 'cancel') return true;
+      if (a === 'del') {
+        const c = $('#e-sconfirm');
+        if (c.hidden) { c.hidden = false; return false; }
+        const ids = new Set(state.units.filter(u => u.subjectId === id).map(u => u.id));
+        state.units = state.units.filter(u => u.subjectId !== id);
+        state.subjects = state.subjects.filter(x => x.id !== id);
+        for (const x of state.sessions) { if (ids.has(x.u)) x.u = null; if (x.j === id) x.j = null; }
+        if (state.timer && state.timer.target && (state.timer.target === 's:' + id || ids.has(state.timer.target.slice(2)))) state.timer.target = '';
+        commit(); toast('科目を削除しました'); return true;
+      }
+      const name = $('#e-sname').value.trim();
+      if (!name) { $('#e-sname').focus(); return false; }
+      s.name = name; s.color = color;
+      commit(); return true;
+    });
+  $('#e-sw').addEventListener('click', e => {
+    const b = e.target.closest('[data-sw]'); if (!b) return;
+    color = +b.dataset.sw;
+    $$('#e-sw .swatch').forEach(x => x.setAttribute('aria-pressed', +x.dataset.sw === color ? 'true' : 'false'));
+  });
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action],[data-route],[data-mode],[data-filter],[data-tmode],[data-ntdir]');
+  if (!el || el.closest('#modal')) return;
+  if (el.matches('input[type="checkbox"]')) return; // handled on change
+  if (el.dataset.route) { state.settings.route = el.dataset.route; q.open.clear(); q.count = 6; commit(); return; }
+  if (el.dataset.ntdir) { ntSet(el.dataset.ntdir); renderNextTrain(); return; }
+  if (el.dataset.mode) {
+    q.mode = el.dataset.mode;
+    if (q.mode === 'arr' && q.live) { const sn = serviceNow(); q.live = false; q.date = sn.date; q.time = Math.min(sn.min + 90, 1440 + 120); }
+    q.open.clear(); q.count = 6; renderTrain(); return;
+  }
+  if (el.dataset.filter) { unitFilter = el.dataset.filter; renderUnits(); return; }
+  if (el.dataset.tmode) {
+    const t = ensureTimer();
+    if (t.running || timerElapsed() > 0) return;
+    t.mode = el.dataset.tmode; t.phase = 'work'; t.cycle = 0; commit(); return;
+  }
+  const id = el.dataset.id, act = el.dataset.action;
+  const today = todayStr();
+  switch (act) {
+    case 'goto': showView(el.dataset.view); break;
+    case 'nt-auto': ntWrite(null); renderNextTrain(); break;
+    case 'open-data': openDataModal(); break;
+    case 'toggle-steps': { if (openSteps.has(id)) openSteps.delete(id); else openSteps.add(id); renderUnits(); break; }
+    case 'xfer-reset': state.settings.xfer = {}; commit({ settings: true }); break;
+    case 'open-route': {
+      if (!ROUTES[el.dataset.rk]) break;
+      state.settings.route = el.dataset.rk; q.open.clear(); q.count = 6; q.live = true; q.mode = 'dep';
+      commit(); showView('train'); break;
+    }
+    case 'start-unit': {
+      const u = unitOf(id); if (!u) break;
+      const t = ensureTimer();
+      if (t.running && t.target === 'u:' + id) { showView('timer'); break; }
+      if (t.running || timerElapsed() > 0) {
+        if (t.phase !== 'break') logSession(timerElapsed(), t.sessionStart || Date.now() - timerElapsed(), t.target);
+        Object.assign(t, { running: false, startedAt: null, acc: 0, phase: 'work', sessionStart: null });
+      }
+      t.target = 'u:' + id;
+      view = 'timer'; for (const v of VIEWS) $('#v-' + v.id).hidden = v.id !== 'timer';
+      $$('.tab').forEach(b => b.setAttribute('aria-current', b.dataset.view === 'timer' ? 'page' : 'false'));
+      try { history.replaceState(null, '', '#timer'); } catch (err) { /* ignore */ }
+      timerStart();
+      toast(`「${u.name}」のタイマーを開始しました`);
+      break;
+    }
+    case 'move-today': {
+      const o = el.dataset.kind === 'unit' ? unitOf(id) : taskOf(id);
+      if (!o) break;
+      if (el.dataset.kind === 'unit') {
+        let moved = false;
+        for (const s of stepsOf(o)) if (isNorma(s) && !s.done && s.plan && s.plan < today) { s.plan = today; moved = true; }
+        if (!moved || (o.plan && o.plan < today)) o.plan = today;
+      } else o.date = today;
+      commit(); break;
+    }
+    case 'delete-task': state.tasks = state.tasks.filter(t => t.id !== id); commit(); break;
+    case 'pick-unit': {
+      const v = $('#unit-pick').value; const u = unitOf(v);
+      if (!u) { toast('追加する単元を選んでください'); break; }
+      u.plan = today; commit(); toast(`「${u.name}」を今日の予定に追加しました`); break;
+    }
+    case 'unit-status': {
+      const u = unitOf(id); if (!u) break;
+      const next = { todo: 'doing', doing: 'done', done: 'todo' }[u.status] || 'doing';
+      if (next === 'done') setUnitDone(u, true); else { u.status = next; u.doneAt = null; }
+      commit(); break;
+    }
+    case 'unit-today': { const u = unitOf(id); if (!u) break; u.plan = u.plan === today ? null : today; commit(); break; }
+    case 'edit-unit': editUnit(id); break;
+    case 'edit-subject': editSubject(id); break;
+    case 'add-unit-for': { $('#units-subject').value = id; $('#units-text').focus(); $('#units-text').scrollIntoView({ block: 'center', behavior: 'smooth' }); break; }
+    case 'clear-samples': {
+      const sids = new Set(state.subjects.filter(s => s.sample).map(s => s.id));
+      const uids = new Set(state.units.filter(u => u.sample || sids.has(u.subjectId)).map(u => u.id));
+      state.subjects = state.subjects.filter(s => !s.sample);
+      state.units = state.units.filter(u => !uids.has(u.id));
+      state.tasks = state.tasks.filter(t => !t.sample);
+      state.sessions = state.sessions.filter(s => !s.x && !uids.has(s.u) && !sids.has(s.j));
+      if (state.timer && state.timer.target && (uids.has(state.timer.target.slice(2)) || sids.has(state.timer.target.slice(2)))) state.timer.target = '';
+      commit(); toast('例のデータを削除しました'); break;
+    }
+    case 'q-now': q.live = true; if (q.mode === 'arr') q.mode = 'dep'; q.open.clear(); q.count = 6; renderTrain(); break;
+    case 'more': q.count += 6; renderTrain(); break;
+    case 'toggle-res': {
+      const k = el.dataset.key;
+      const cur = el.getAttribute('aria-expanded') === 'true';
+      if (q.open.size === 0) { const first = $('#results .res-head'); if (first && first.getAttribute('aria-expanded') === 'true') q.open.add(first.dataset.key); }
+      if (cur) q.open.delete(k); else q.open.add(k);
+      if (q.open.size === 0) q.open.add('__none__');
+      renderTrain(); break;
+    }
+    case 't-start': timerStart(); break;
+    case 't-pause': timerPause(); break;
+    case 't-finish': timerFinish(); break;
+    case 't-reset': timerReset(); break;
+    case 'delete-session': state.sessions = state.sessions.filter(s => s.id !== id); commit(); toast('記録を削除しました'); break;
+  }
+});
+
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.closest('#modal')) return;
+  if (el.matches('input[type="checkbox"][data-action="toggle-unit"]')) { const u = unitOf(el.dataset.id); if (u) { setUnitDone(u, el.checked); commit(); } return; }
+  if (el.matches('input[type="checkbox"][data-action="toggle-step"]')) { const u = unitOf(el.dataset.id); if (u) { setStepDone(u, +el.dataset.i, el.checked); commit(); } return; }
+  if (el.dataset.xfer) {
+    const xid = el.dataset.xfer, cur = transferDef(xid), clamp = v => Math.max(0, Math.min(30, Math.round(+v || 0)));
+    const o = { min: cur.min, windows: cur.windows.map(w => ({ from: hm(w.from), to: hm(w.to), min: w.min })) };
+    const f = el.dataset.f, k = +el.dataset.w;
+    if (f === 'min') o.min = clamp(el.value);
+    else if (o.windows[k]) { if (f === 'wmin') o.windows[k].min = clamp(el.value); else if (el.value) o.windows[k][f === 'wfrom' ? 'from' : 'to'] = el.value; }
+    state.settings.xfer = { ...(state.settings.xfer || {}), [xid]: o };
+    commit({ settings: true }); return;
+  }
+  if (el.matches('input[type="checkbox"][data-action="toggle-task"]')) { const t = taskOf(el.dataset.id); if (t) { t.done = el.checked; t.doneAt = el.checked ? todayStr() : null; commit(); } return; }
+  if (el.dataset.change === 'unit-date') { const u = unitOf(el.dataset.id); if (u) { u.plan = el.value || null; commit(); } return; }
+  switch (el.id) {
+    case 'q-date': case 'q-time': {
+      const cq = currentQuery();
+      const d = $('#q-date').value ? parseYmd($('#q-date').value) : cq.date;
+      let tm = cq.time;
+      if ($('#q-time').value) { const [h, m] = $('#q-time').value.split(':').map(Number); tm = h * 60 + m; if (h < 3) tm += 1440; }
+      q.live = false; q.date = d; q.time = tm; q.open.clear(); q.count = 6; renderTrain(); break;
+    }
+    case 'q-day': q.day = el.value; q.open.clear(); renderTrain(); break;
+    case 't-target': { const t = ensureTimer(); t.target = el.value; commit(); break; }
+    case 'pomo-work': state.settings.pomoWork = Math.max(5, Math.min(120, Math.round(+el.value || 25))); commit(); break;
+    case 'pomo-break': state.settings.pomoBreak = Math.max(1, Math.min(60, Math.round(+el.value || 5))); commit(); break;
+  }
+});
+
+$('#f-task').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#task-input').value.trim();
+  if (!v) return;
+  state.tasks.push({ id: uid(), text: v.slice(0, 200), date: todayStr(), done: false, order: Date.now() });
+  $('#task-input').value = '';
+  commit();
+});
+$('#f-subject').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#subject-name').value.trim();
+  if (!v) return;
+  const s = { id: uid(), name: v.slice(0, 60), color: nextColor() };
+  state.subjects.push(s);
+  $('#subject-name').value = '';
+  commit();
+  $('#units-subject').value = s.id;
+  toast(`科目「${s.name}」を追加しました。続けて単元を追加できます`);
+});
+$('#f-units').addEventListener('submit', e => {
+  e.preventDefault();
+  const sid = $('#units-subject').value;
+  if (!subjOf(sid)) { toast('先に科目を追加してください'); $('#subject-name').focus(); return; }
+  const lines = $('#units-text').value.split(/\r?\n/).map(s => s.replace(/^[\s・\-*•\d.．、)）]+/, '').trim()).filter(Boolean);
+  if (!lines.length) { $('#units-text').focus(); return; }
+  const est = Math.max(0, Math.min(600, +$('#units-est').value || 0)) || null;
+  let order = Date.now();
+  for (const name of lines.slice(0, 200)) state.units.push({ id: uid(), subjectId: sid, name: name.slice(0, 120), status: 'todo', plan: null, doneAt: null, est, order: order++ });
+  $('#units-text').value = '';
+  commit();
+  toast(`${lines.length}件の単元を追加しました`);
+});
+$('#f-manual').addEventListener('submit', e => {
+  e.preventDefault();
+  const m = Math.round(+$('#m-min').value || 0);
+  if (m < 1) { $('#m-min').focus(); return; }
+  const d = $('#m-date').value || todayStr();
+  const start = parseYmd(d); start.setHours(12, 0, 0, 0);
+  logSession(m * 60000, d === todayStr() ? Date.now() - m * 60000 : start.getTime(), $('#m-target').value, d);
+  $('#m-min').value = '';
+  commit();
+  toast(`${fmtMin(m)} を記録しました`);
+});
+
+/* ================= ticking ================= */
+setInterval(() => {
+  phaseCheck();
+  renderTimerChip();
+  if (view === 'timer') renderClock();
+  if (state.timer && state.timer.running && view === 'today') { const el = $('#today-studied'); if (el) el.textContent = fmtMin(minutesOn(todayStr()) + liveWorkMs() / 60000); }
+}, 250);
+let lastMinute = -1;
+setInterval(() => {
+  const m = new Date().getMinutes();
+  if (m === lastMinute) return;
+  lastMinute = m;
+  renderHeader();
+  if (view === 'train' && q.live) renderTrain();
+  if (view === 'today') { renderNextTrain(); renderTodayStudy(); }
+  if (view === 'timer') { renderSessions(); }
+}, 5000);
+
+/* ================= boot ================= */
+buildTabs();
+rebuildData();
+setSync('connecting');
+showView((location.hash || '#today').slice(1), false);
+if (state.timer && state.timer.running) holdWake(true);
+initCloud();
+})();
+</script>

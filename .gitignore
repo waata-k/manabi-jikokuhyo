@@ -1,0 +1,8 @@
+# personal data and tools (never publish)
+private/
+
+# local settings
+.claude/
+.DS_Store
+__pycache__/
+*.pyc
